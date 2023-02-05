@@ -11,6 +11,18 @@
                 "${workspaceFolder}/assignment1/assignment1.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-a1",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "build",
+                "${workspaceFolder}/assignment1/assignment1.csproj",
+                "-property:GenerateFullPaths=true",
+                "-consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }

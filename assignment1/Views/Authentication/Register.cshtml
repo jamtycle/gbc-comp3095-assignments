@@ -1,0 +1,76 @@
+@model assignment1.Models.RegistrationModel;
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<a asp-action="Index" asp-controller="Home" class="btn btn-primary btn-lg btn-floating">
+    <i class="fas fa-angle-left"></i>
+</a>
+
+@* <button type="button" asp-action="Index" class="btn btn-primary btn-lg btn-floating">
+    
+</button> *@
+
+<form asp-action="Register" method="post">
+    @* Username *@
+    <div class="form-outline mb-4">
+        <input type="text" id="username" asp-for="Username" class="form-control" />
+        <label class="form-label" for="username">Username</label>
+    </div>
+
+    <div class="row mb-4">
+        @* First Name *@
+        <div class="col">
+            <div class="form-outline">
+                <input type="text" id="fname" asp-for="FirstName" class="form-control" />
+                <label class="form-label" for="fname">First name</label>
+            </div>
+        </div>
+        @* Last Name *@
+        <div class="col">
+            <div class="form-outline">
+                <input type="text" id="lname" asp-for="LastName" class="form-control" />
+                <label class="form-label" for="lname">Last name</label>
+            </div>
+        </div>
+    </div>
+
+    @* Email *@
+    <div class="form-outline mb-4">
+        <input type="email" id="uemail" asp-for="Email" class="form-control" />
+        <label class="form-label" for="uemail">Email address</label>
+    </div>
+
+    @* Password *@
+    @* @using (Html.BeginForm("Subscribe", "Home", FormMethod.Post))
+    {
+        @Html.TextBoxFor(model => model.Email)
+        @Html.ValidationMessageFor(model => model.Email)
+        <button type="submit">Subscribe</button>
+    } *@
+    @* @Html.TextBoxFor(model => model.Password)
+    @Html.ValidationMessageFor(model => model.Password, "Passwords does not match."); *@
+    <div class="form-outline mb-4">
+        @* <input type="password" id="ps" asp-for="Password" class="form-control" /> *@
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id ="pass"})
+        @* @Html.TextBoxFor(model => model.Passwords, htmlAttributes:"type='password' class='form-control' id='ps'") *@
+        <label class="form-label" for="pass">Password</label>
+    </div>
+
+    @* Confirm Password *@
+    <div class="form-outline mb-4">
+        @Html.PasswordFor(model => model.VerifyPassword, new { @class = "form-control", @id = "confirmps"})
+        @* <asp:CompareValidator ID="passval" runat="server" ControlToValidate="ConfirmPass" CssClass="ValidationError"
+            ControlToCompare="pass" ErrorMessage="No Match" ToolTip="Password must be the same" /> *@
+        @* <input type="password" id="ps" asp-for="Password" class="form-control" /> *@
+        <label class="form-label" for="confirmps">Password</label>
+    </div>
+    @* @Html.ValidationMessageFor(model => model.Password, "Password does not match.") *@
+
+
+
+    @* Submit Button *@
+    <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+</form>
