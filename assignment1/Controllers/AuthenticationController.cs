@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using assignment1.Data;
 using assignment1.Libs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,12 @@ namespace assignment1.Models
         public IActionResult Register()
         {
             return View();
+        }
+
+        [HttpGet("AuthResult")]
+        public IActionResult AuthResult(string _message)
+        {
+            return View(new { message = _message });
         }
         #endregion
 
@@ -52,14 +59,24 @@ namespace assignment1.Models
             return View("AuthInfo");
         }
 
-        [HttpPost("Register")]  
+        [HttpPost("Register")]
         public IActionResult Register(RegistrationModel _user)
         {
+            // ModelState.Erro;
             if (!ModelState.IsValid) return View(_user);
 
-            return View("Home");
+            Auth auth = new(_user);
+            _user.Password = auth.EncryptPassword();
+
+            if (new DBConnector().NewUser(_user))
+            {
+                // Response.Cookies.Append("");
+                // return RedirectToAction("Index", "Home");
+                return View("AuthResult");
+            }
+            else return View(_user);
         }
-        #endregion        
+        #endregion
 
         #region Logging & Error Handling
         public AuthenticationController(ILogger<AuthenticationController> _logger)

@@ -5,19 +5,19 @@
 }
 
 
-<a asp-action="Index" asp-controller="Home" class="btn btn-primary btn-lg btn-floating">
+<a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg btn-floating">
     <i class="fas fa-angle-left"></i>
 </a>
 
-@* <button type="button" asp-action="Index" class="btn btn-primary btn-lg btn-floating">
-    
-</button> *@
+<br>
+<br>
 
 <form asp-action="Register" method="post">
     @* Username *@
     <div class="form-outline mb-4">
         <input type="text" id="username" asp-for="Username" class="form-control" />
         <label class="form-label" for="username">Username</label>
+        @* @Html.ValidationMessageFor(x => x.Username, null, htmlAttributes: new { @class = "form-control" }) *@
     </div>
 
     <div class="row mb-4">
@@ -26,6 +26,7 @@
             <div class="form-outline">
                 <input type="text" id="fname" asp-for="FirstName" class="form-control" />
                 <label class="form-label" for="fname">First name</label>
+                @* @Html.ValidationMessageFor(x => x.FirstName) *@
             </div>
         </div>
         @* Last Name *@
@@ -33,6 +34,7 @@
             <div class="form-outline">
                 <input type="text" id="lname" asp-for="LastName" class="form-control" />
                 <label class="form-label" for="lname">Last name</label>
+                @* @Html.ValidationMessageFor(x => x.LastName) *@
             </div>
         </div>
     </div>
@@ -40,36 +42,27 @@
     @* Email *@
     <div class="form-outline mb-4">
         <input type="email" id="uemail" asp-for="Email" class="form-control" />
-        <label class="form-label" for="uemail">Email address</label>
+        <label class="form-label" for="uemail">Email</label>
+        @* @Html.ValidationMessageFor(x => x.Email) *@
     </div>
 
     @* Password *@
-    @* @using (Html.BeginForm("Subscribe", "Home", FormMethod.Post))
-    {
-        @Html.TextBoxFor(model => model.Email)
-        @Html.ValidationMessageFor(model => model.Email)
-        <button type="submit">Subscribe</button>
-    } *@
-    @* @Html.TextBoxFor(model => model.Password)
-    @Html.ValidationMessageFor(model => model.Password, "Passwords does not match."); *@
     <div class="form-outline mb-4">
-        @* <input type="password" id="ps" asp-for="Password" class="form-control" /> *@
-        @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id ="pass"})
-        @* @Html.TextBoxFor(model => model.Passwords, htmlAttributes:"type='password' class='form-control' id='ps'") *@
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id ="pass" })
         <label class="form-label" for="pass">Password</label>
+        @* @Html.ValidationMessageFor(x => x.Password) *@
     </div>
 
     @* Confirm Password *@
     <div class="form-outline mb-4">
-        @Html.PasswordFor(model => model.VerifyPassword, new { @class = "form-control", @id = "confirmps"})
-        @* <asp:CompareValidator ID="passval" runat="server" ControlToValidate="ConfirmPass" CssClass="ValidationError"
-            ControlToCompare="pass" ErrorMessage="No Match" ToolTip="Password must be the same" /> *@
-        @* <input type="password" id="ps" asp-for="Password" class="form-control" /> *@
-        <label class="form-label" for="confirmps">Password</label>
+        @Html.PasswordFor(model => model.VerifyPassword, new { @class = "form-control", @id = "confirmps" })
+        <label class="form-label" for="confirmps">Confirm Password</label>
+        @* @Html.ValidationMessageFor(x => x.VerifyPassword) *@
     </div>
-    @* @Html.ValidationMessageFor(model => model.Password, "Password does not match.") *@
 
+    @Html.PartialAsync("_ValidationSummary", ViewData.ModelState).Result
 
+    <br>
 
     @* Submit Button *@
     <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>

@@ -11,15 +11,15 @@ namespace assignment1.Middleware
 
         public async Task InvokeAsync(HttpContext _context)
         {
-            if (_context.Request.Cookies.ContainsKey("session"))
-            {
-                string? session = _context.Request.Cookies["session"];
-                if (!string.IsNullOrEmpty(session) && !string.IsNullOrWhiteSpace(session))
-                {
-                    // TODO: Check the session with the databases
+            // if (_context.Request.Cookies.ContainsKey("session"))
+            // {
+            //     string? session = _context.Request.Cookies["session"];
+            //     if (!string.IsNullOrEmpty(session) && !string.IsNullOrWhiteSpace(session))
+            //     {
+            //         // TODO: Check the session with the databases
                     
-                }
-            }
+            //     }
+            // }
 
             await request_delegate(_context);
         }
