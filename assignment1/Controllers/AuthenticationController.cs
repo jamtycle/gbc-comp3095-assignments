@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using assignment1.Data;
 using assignment1.Libs;
+using assignment1.Models;
+using assignment1.Models.Auth;
 using Microsoft.AspNetCore.Mvc;
 
-namespace assignment1.Models
+namespace assignment1.Controllers
 {
     public class AuthenticationController : Controller
     {
@@ -15,19 +17,30 @@ namespace assignment1.Models
         [HttpGet("Login")]
         public IActionResult Login()
         {
+            if (Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
             return View();
+            // Possibly session available
+            // string session = Request.Cookies[Persistent.UserSession_Cookie] ?? string.Empty;
+            // if (string.IsNullOrEmpty(session) || string.IsNullOrWhiteSpace(session)) return View();
+
+            // var info = new DBConnector().RecoverSession(session);
+
+            // if (info is LoginModel @login) return RedirectToAction("Index", "Home", @login);
+            // else if (info is string @message) return View("AuthResult", new AuthInfoModel() { Title = "Session recovered!", Message = @message });
+            // else return View();
         }
 
         [HttpGet("Register")]
         public IActionResult Register()
         {
+            if (Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return GoToIndex();
             return View();
         }
 
         [HttpGet("AuthResult")]
-        public IActionResult AuthResult(string _message)
+        public IActionResult AuthResult(AuthInfoModel _model)
         {
-            return View(new { message = _message });
+            return View(_model);
         }
         #endregion
 
@@ -35,22 +48,24 @@ namespace assignment1.Models
         [HttpPost("Login")]
         public IActionResult Login(LoginModel _login)
         {
+            if (!ModelState.IsValid) return View(_login);
+
             if (_login == null) return View(); // Shouldn't be needed, since LoginModel is not nulleable.
 
             Auth auth = new(_login);
+            auth.GenerateSession();
+            Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions() { Expires = DateTime.Now.AddDays(7), Path = "/" });
+            // Request.Cookies.Append(new KeyValuePair<string, string>("", ""));
             // new Auth(_login).ValidatePassword()
 
             // TODO: If the session cookie string is empty.
-            if (auth.HasActiveSession())
-            {
-                return auth.ValidateSession() ? View("Home") : View("SessionError");
-            }
+            if (auth.HasActiveSession()) return auth.ValidateSession() ? GoToIndex() : View("SessionError");
 
             if (auth.ValidatePassword())
             {
-                _login.SessionCookie = auth.GenerateSession();
-                _login.MachineName = Environment.MachineName; // TODO: maybe this is not the user machine.
-                return View("Home");
+                auth.GenerateSession();
+                // _login.MachineName = Environment.MachineName; // TODO: maybe this is not the user machine.
+                return GoToIndex();
             }
 
             // if(auth.ValidatePassword())
@@ -62,20 +77,30 @@ namespace assignment1.Models
         [HttpPost("Register")]
         public IActionResult Register(RegistrationModel _user)
         {
-            // ModelState.Erro;
             if (!ModelState.IsValid) return View(_user);
 
             Auth auth = new(_user);
-            _user.Password = auth.EncryptPassword();
 
-            if (new DBConnector().NewUser(_user))
+            if (new DBConnector().NewUser((RegistrationModel)auth.User))
             {
-                // Response.Cookies.Append("");
-                // return RedirectToAction("Index", "Home");
-                return View("AuthResult");
+                return GoToIndex();
+                // return View("AuthResult", new AuthInfoModel() { Title = "Registration Success", Message = "The registration was a success, please log in now!" });
             }
-            else return View(_user);
+            else return View(auth.User);
         }
+        #endregion
+
+        #region Helpers
+        // private IActionResult UserSessionRecovery(UserBase _base)
+        // {
+        //     var info = new DBConnector().RecoverSession(_base.SessionCookie);
+
+        //     if (info is LoginModel @login) return RedirectToAction("Index", "Home", @login);
+        //     else if (info is string @message) return View("AuthResult", new AuthInfoModel() { Title = "Session recovered!", Message = @message });
+        //     else return View();
+        // }
+
+        private IActionResult GoToIndex() => RedirectToAction("Index", "Home");
         #endregion
 
         #region Logging & Error Handling

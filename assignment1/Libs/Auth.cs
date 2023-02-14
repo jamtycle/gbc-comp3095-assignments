@@ -1,4 +1,7 @@
+using System.Collections;
 using System.Security.Cryptography;
+using assignment1.Data;
+using assignment1.Models.Auth;
 using assignment1.Models.Generics;
 using static System.Text.Encoding;
 
@@ -7,48 +10,73 @@ namespace assignment1.Libs
     public class Auth
     {
         private readonly UserBase user;
+        private readonly UserBase dbuser;
+        private readonly Hashtable errors = new();
+
+        public Auth(string _session)
+        {
+            var info = new DBConnector().RecoverSession(_session);
+            if (info is LoginModel @login) this.user = @login;
+            else if (info is string @error) errors.Add("login-error", @error);
+            else throw new Exception("🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸 Huh? 🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸🤨📸");
+        }
 
         public Auth(UserBase _user)
         {
             this.user = _user;
+            if (this.user is LoginModel @user)
+            {
+                var info = new DBConnector().LoginUser(@user);
+                if (info is LoginModel @dbuser) this.dbuser = @dbuser;
+                else errors.Add("login-error", (string)info);
+            }
+            else if (this.user is RegistrationModel @reg)
+            {
+                @reg.VerifyPassword = null;
+                EncryptPassword();
+            }
         }
 
         #region Sessions
-        public string GenerateSession()
+        public void GenerateSession()
         {
             using SHA256 sha = SHA256.Create();
             byte[] edata = sha.ComputeHash(UTF8.GetBytes(new Random().Next(0, 1122091706).ToString()));
 
-            return System.Convert.ToHexString(edata);
+            user.SessionCookie = System.Convert.ToHexString(edata);
         }
 
         public bool ValidateSession()
         {
+            if (errors.ContainsKey("login-error")) return false;
+
             // TODO: Get Session from DB.
-            string session = string.Empty;
-            return user.SessionCookie.Equals(session, StringComparison.Ordinal);
+            string dbsession = this.dbuser.SessionCookie;
+            return user.SessionCookie.Equals(dbsession, StringComparison.Ordinal);
         }
 
         public bool HasActiveSession()
         {
-            string db_session = string.Empty; // TODO: Get session from DB.
-            return string.IsNullOrEmpty(db_session) || string.IsNullOrWhiteSpace(db_session);
+            string dbsession = user.SessionCookie ?? string.Empty; // TODO: Get session from DB.
+            return Utilities.ValidateString(dbsession);
         }
         #endregion
 
         #region Passwords
-        public string EncryptPassword()
+        public void EncryptPassword()
         {
             if (user.Password.Length < 8) throw new FormatException("Password MUST be more than 8 characters");
             string pass = user.Password;
             PeruvianSalt(ref pass);
             user.Password = pass;
-            return GenerateSHA256(user.Password);
+            user.Password = GenerateSHA256(user.Password);
         }
 
         public bool ValidatePassword() // this MAY be changed later
         {
-            string hashed_ps = string.Empty; // TODO: Get hashed password from DB.
+            if (errors.ContainsKey("login-error")) return false;
+
+            string hashed_ps = this.dbuser.Password;
             string pass = user.Password;
             PeruvianSalt(ref pass);
             user.Password = pass;
@@ -60,11 +88,11 @@ namespace assignment1.Libs
         private static string GenerateSHA256(object _word) // maybe I just should use string as parameter xd
         {
             if (_word == null) return string.Empty;
-            if (_word is not string) _word = _word.ToString() ?? string.Empty;
-            if (_word.Equals(string.Empty)) return (string)_word;
+            if (_word is string @word)
+                if (Utilities.ValidateString(@word)) return @word;
 
             using SHA256 sha = SHA256.Create();
-            return System.Convert.ToHexString(sha.ComputeHash(UTF8.GetBytes((string)_word)));
+            return System.Convert.ToHexString(sha.ComputeHash(UTF8.GetBytes(_word.ToString())));
         }
 
         private static void PeruvianSalt(ref string _potatoes)
@@ -75,10 +103,19 @@ namespace assignment1.Libs
             var seasoner = salt.Zip(pepper, (x, y) => (x, y));
             var crakers = seasoner.Select(x => Math.Abs(x.x) + Math.Abs(x.y));
 
-            int blade = 1;
+            int blade = 0;
             foreach (double blender in crakers)
-                _potatoes = _potatoes.Insert(blade, new string((char)System.Convert.ToInt32(blender), 1));
+            {
+                _potatoes = _potatoes.Insert(++blade, new string((char)System.Convert.ToInt32(blender), 1));
+                blade++;
+            }
         }
+        #endregion
+
+        #region Properties
+        public Hashtable Errors { get => errors; }
+
+        public UserBase User => user;
         #endregion
     }
 }

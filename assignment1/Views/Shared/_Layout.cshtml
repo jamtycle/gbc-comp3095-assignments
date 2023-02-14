@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model assignment1.Models.LayoutModel
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -22,22 +24,38 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @* @foreach (var menu in MenuModel.GetMenus()) // TODO: populate the static whith the actual menus
+
+                        @if (Model != null)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area=@menu[area] asp-controller="@menu[controller]" asp-action="@menu[action]">@menu["label"]</a>
-                            </li>
+                            @foreach (assignment1.Models.MenuModel menu in Model.Menus)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="@menu.Area" asp-controller="@menu.Controller"
+                                asp-action="@menu.Action">@menu.Label</a>
+                                </li>
+                            }
+                        }
+
+                        @* @foreach (var menu in MenuModel.GetMenus()) // TODO: populate the static whith the actual
+                        menus
+                        {
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area=@menu[area] asp-controller="@menu[controller]"
+                        asp-action="@menu[action]">@menu["label"]</a>
+                        </li>
                         } *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Authentication"
+                                asp-action="Login">Login</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Authentication"
+                                asp-action="Register">Register</a>
                         </li>
                     </ul>
                 </div>

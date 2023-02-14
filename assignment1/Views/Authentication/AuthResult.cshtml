@@ -1,0 +1,14 @@
+@model assignment1.Models.Auth.AuthInfoModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<form asp-action="Index" asp-controller="Home" method="get">
+    <div>
+        <h1>@Model.Title</h1>
+        <p>@Model.Message</p>
+    </div>
+
+    <button type="submit">Continue</button>
+</form>
