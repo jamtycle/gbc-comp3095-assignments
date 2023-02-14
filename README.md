@@ -1,9 +1,5 @@
 # GBC Web App - Assignments
---------------------
-#
 ### Assignment 1
---------------------
-#
 ##### Link to trello:
 [![Trello](https://upload.wikimedia.org/wikipedia/en/8/8c/Trello_logo.svg)](https://trello.com/b/CRBkhaI4/web-dev)
 
