@@ -19,15 +19,6 @@ namespace assignment1.Controllers
         {
             if (Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
             return View();
-            // Possibly session available
-            // string session = Request.Cookies[Persistent.UserSession_Cookie] ?? string.Empty;
-            // if (string.IsNullOrEmpty(session) || string.IsNullOrWhiteSpace(session)) return View();
-
-            // var info = new DBConnector().RecoverSession(session);
-
-            // if (info is LoginModel @login) return RedirectToAction("Index", "Home", @login);
-            // else if (info is string @message) return View("AuthResult", new AuthInfoModel() { Title = "Session recovered!", Message = @message });
-            // else return View();
         }
 
         [HttpGet("Register")]
@@ -48,35 +39,27 @@ namespace assignment1.Controllers
         [HttpPost("Login")]
         public IActionResult Login(LoginModel _login)
         {
+            if (Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
             if (!ModelState.IsValid) return View(_login);
 
-            if (_login == null) return View(); // Shouldn't be needed, since LoginModel is not nulleable.
-
             Auth auth = new(_login);
-            auth.GenerateSession();
-            Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions() { Expires = DateTime.Now.AddDays(7), Path = "/" });
-            // Request.Cookies.Append(new KeyValuePair<string, string>("", ""));
-            // new Auth(_login).ValidatePassword()
 
-            // TODO: If the session cookie string is empty.
             if (auth.HasActiveSession()) return auth.ValidateSession() ? GoToIndex() : View("SessionError");
 
             if (auth.ValidatePassword())
             {
                 auth.GenerateSession();
-                // _login.MachineName = Environment.MachineName; // TODO: maybe this is not the user machine.
+                Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions() { Expires = DateTime.Now.AddDays(7), Path = "/" });
                 return GoToIndex();
             }
 
-            // if(auth.ValidatePassword())
-            // TODO: Send the machine name & the cookie session to the database
-
-            return View("AuthInfo");
+            return View(auth.User);
         }
 
         [HttpPost("Register")]
         public IActionResult Register(RegistrationModel _user)
         {
+            if (Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
             if (!ModelState.IsValid) return View(_user);
 
             Auth auth = new(_user);

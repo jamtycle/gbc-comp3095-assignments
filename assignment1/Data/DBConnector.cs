@@ -10,15 +10,15 @@ namespace assignment1.Data
 {
     public class DBConnector : MainData
     {
-        public DBConnector() : base(Persistent.CnxString)
+        public DBConnector() : base(System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(Persistent.CnxString)))
         {
         }
 
         public bool NewUser(RegistrationModel _register)
         {
-            var model = GetDataModel("UserModel");
+            var model = GetDataModel("UserType");
             model.Rows.Add(_register.ToDataRow(model));
-            int affected = this.NonQueryExecuteSQL("[brb_CRUD_user]", new Hashtable() { { "@table", model }, { "@action", CRUD.Create } });
+            int affected = this.NonQueryExecuteSQL("[brb_CRUD_user]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
             return affected > 0;
         }
 

@@ -78,14 +78,20 @@ namespace assignment1.Libs
             if (errors.ContainsKey("login-error")) return false;
 
             string hashed_ps = this.dbuser.Password;
-            string pass = user.Password;
-            PeruvianSalt(ref pass);
-            user.Password = pass;
-            return GenerateSHA256(user.Password).Equals(hashed_ps, StringComparison.Ordinal);
+            //string pass = user.Password;
+            //PeruvianSalt(ref pass);
+            //user.Password = pass;
+            return user.Password.Equals(hashed_ps, StringComparison.Ordinal);
         }
         #endregion
 
         #region Encryption
+        private static string GenerateBase64(string _word)
+        {
+            return System.Convert.ToBase64String(UTF8.GetBytes(_word));
+            //return UTF8.GetString(System.Convert.FromBase64String(_word));
+        }
+
         private static string GenerateSHA256(object _word) // maybe I just should use string as parameter xd
         {
             if (_word == null) return string.Empty;
@@ -99,15 +105,16 @@ namespace assignment1.Libs
         private static void PeruvianSalt(ref string _potatoes)
         {
             var char_nums = _potatoes.Select(x => x - '0');
-            var salt = char_nums.Select((x, i) => Math.BitDecrement(x));
+            var salt = char_nums.Select((x, i) => Math.Tan(x));
             var pepper = char_nums.Select((x, i) => Math.Log(x, 6) / Math.Cos(x * Math.PI) - 0.2);
             var seasoner = salt.Zip(pepper, (x, y) => (x, y));
             var crakers = seasoner.Select(x => Math.Abs(x.x) + Math.Abs(x.y));
 
             int blade = 0;
             foreach (double blender in crakers)
-            {
-                _potatoes = _potatoes.Insert(++blade, new string((char)System.Convert.ToInt32(blender), 1));
+            { 
+                //if (!double.IsFinite(blender)) blender = double.Epsilon;
+                _potatoes = _potatoes.Insert(++blade, new string((char)(long)(!double.IsFinite(blender) ? double.Epsilon : blender), 1));
                 blade++;
             }
         }
