@@ -26,6 +26,7 @@ namespace assignment1.Libs
             this.user = _user;
             if (this.user is LoginModel @user)
             {
+                this.EncryptPassword();
                 var info = new DBConnector().LoginUser(@user);
                 if (info is LoginModel @dbuser) this.dbuser = @dbuser;
                 else errors.Add("login-error", (string)info);

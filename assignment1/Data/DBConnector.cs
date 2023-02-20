@@ -24,7 +24,7 @@ namespace assignment1.Data
 
         public object LoginUser(LoginModel _login)
         {
-            DataTable info = this.GetSQLData("[brb_login]", new Hashtable() { { "@username", _login.Username }, { "@password", _login.Password } });
+            DataTable info = this.GetSQLData("[brb_login]", new Hashtable() { { "@username", _login.Username } }); //, { "@password", _login.Password }
             if (info.Rows.Count <= 0) return "No user with that credentials was found! 🤨";
             else if (info.Rows.Count >= 2) return "Something is not quite right 🤔";
             else return new LoginModel(info.Rows[0]);

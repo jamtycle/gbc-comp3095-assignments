@@ -91,15 +91,6 @@ namespace assignment1.Controllers
         #endregion
 
         #region Helpers
-        // private IActionResult UserSessionRecovery(UserBase _base)
-        // {
-        //     var info = new DBConnector().RecoverSession(_base.SessionCookie);
-
-        //     if (info is LoginModel @login) return RedirectToAction("Index", "Home", @login);
-        //     else if (info is string @message) return View("AuthResult", new AuthInfoModel() { Title = "Session recovered!", Message = @message });
-        //     else return View();
-        // }
-
         private IActionResult GoToIndex() => RedirectToAction("Index", "Home");
         #endregion
 
