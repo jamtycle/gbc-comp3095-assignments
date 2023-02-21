@@ -141,7 +141,7 @@ CREATE TYPE [dbo].[BidType] AS TABLE(
 )
 GO
 
-CREATE PROCEDURE [dbo].[brb_CRUD_booking]
+CREATE PROCEDURE [dbo].[brb_CRUD_bid]
 (
     @type TINYINT,
     @table BidType READONLY 

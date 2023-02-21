@@ -2,6 +2,7 @@ using System.Collections;
 using System.Data;
 using assignment1.Libs;
 using assignment1.Models;
+using assignment1.Models.Auction;
 using assignment1.Models.Auth;
 using assignment1.Models.Generics;
 using Data;
@@ -44,9 +45,24 @@ namespace assignment1.Data
                 yield return new MenuModel(row);
         }
 
+        public AuctionModel GetAuction(int _auction_id)
+        {
+            DataSet info = this.GetMultiTables("[brb_get_auction]", new Hashtable { { "@auction_id", _auction_id } });
+            if (info.Tables[0].Rows.Count == 0) return new AuctionModel();
+            return new AuctionModel(info.Tables[0].Rows[0], info.Tables[1]);
+        }
+
         public DataTable GetLastAuctions()
         {
             return this.GetSQLData("[brb_get_last_auctions]", new Hashtable());
+        }
+
+        public bool AddBid(BidModel _bid)
+        {
+            var model = GetDataModel("BidType");
+            model.Rows.Add(_bid.ToDataRow(model));
+            int affected = this.NonQueryExecuteSQL("[brb_CRUD_bid]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
+            return affected > 0;
         }
 
 #nullable enable

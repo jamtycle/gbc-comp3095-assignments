@@ -1,15 +1,10 @@
-using System.ComponentModel.DataAnnotations;
 using System.Data;
-using assignment1.Models.Interfaces;
 
 namespace assignment1.Models.Generics
 {
     public abstract class UserBase : ModelBase
     {
-        public UserBase() : base()
-        {
-
-        }
+        public UserBase() : base() { }
 
         public UserBase(DataRow _row) : base(_row)
         {

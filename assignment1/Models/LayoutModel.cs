@@ -9,10 +9,7 @@ namespace assignment1.Models
     {
         private IEnumerable<MenuModel> menus;
 
-        public LayoutModel()
-        {
-
-        }
+        public LayoutModel() { }
 
         public IEnumerable<MenuModel> Menus { get => menus; set => menus = value; }
     }
@@ -21,10 +18,7 @@ namespace assignment1.Models
     {
         private T data;
 
-        public LayoutModel() : base()
-        {
-
-        }
+        public LayoutModel() : base() { }
 
         public LayoutModel(DataRow _row)
         {
