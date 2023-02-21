@@ -52,9 +52,47 @@ namespace assignment1.Data
             return new AuctionModel(info.Tables[0].Rows[0], info.Tables[1]);
         }
 
-        public DataTable GetLastAuctions()
+        public enum LandingPageAuctionsOptions : byte { Carrousel, Last50, Last100 }
+        public IEnumerable<AuctionModel> GetLastAuctions(LandingPageAuctionsOptions _option)
         {
-            return this.GetSQLData("[brb_get_last_auctions]", new Hashtable());
+            DataTable table = this.GetSQLData("[brb_get_last_auctions]", new Hashtable() { { "@option", (byte)_option } });
+            foreach (DataRow row in table.Rows)
+                yield return new AuctionModel(row);
+        }
+
+        public IEnumerable<AuctionModel> SearchAuctions(string _search)
+        {
+            // Option 1 - Local Linear Search
+            // IEnumerable<AuctionModel> data = this.GetLastAuctions(LandingPageAuctionsOptions.Last100);
+            // return data.Where(x =>
+            // {
+            //     if (_search.Contains(',')) // that would work as an OR, but there could be more, and mixed operators, like & for AND. And () for more complex searches.
+            //     {
+            //         string[] terms = _search.Split(',');
+            //         return terms.Any(t =>
+            //         {
+            //             if (!t.Contains(':')) return false;
+            //             string[] prop = t.Split(':');
+            //             return x.GetType().GetProperty(prop[0], System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(x).ToString().Equals(prop[1]);
+            //         });
+            //     }
+
+            //     return x.Auction_name.Contains(_search);
+            // });
+
+            // Option 2 - Database Search
+            DataTable data = this.GetSQLData("[brb_auction_search]", new Hashtable() { { "@search", _search } });
+            foreach (DataRow row in data.Rows)
+                yield return new AuctionModel(row);
+
+            /*
+            Hi :) Bruno here, I found interesting the local search of the last 100 auction items, however, that leave the
+                algorithm just to a recent search and return the whole table and then filtered locally is not an option.
+            So, I believe that the best approach would be to send the search info to the database and work the search algorithm on SQL,
+                that would leave the code here significantly shorter and all the searching power will occur in the database which have 
+                to its disposition all the tables.
+            All the database scripts are in the "database.sql" file
+            */
         }
 
         public bool AddBid(BidModel _bid)
@@ -62,6 +100,21 @@ namespace assignment1.Data
             var model = GetDataModel("BidType");
             model.Rows.Add(_bid.ToDataRow(model));
             int affected = this.NonQueryExecuteSQL("[brb_CRUD_bid]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
+            return affected > 0;
+        }
+
+        public IEnumerable<dynamic> GetUserTypes()
+        {
+            DataTable data = this.GetSQLData("[brb_get_user_types]");
+            foreach (DataRow row in data.Rows)
+                yield return new { UserTypeId = row["user_type_id"], UserTypeName = row["user_type_name"] };
+        }
+
+        public bool UpdateUser(UserBase _user)
+        {
+            var model = GetDataModel("UserType");
+            model.Rows.Add(_user.ToDataRow(model));
+            int affected = this.NonQueryExecuteSQL("[brb_CRUD_user]", new Hashtable() { { "@table", model }, { "@type", CRUD.Update } });
             return affected > 0;
         }
 

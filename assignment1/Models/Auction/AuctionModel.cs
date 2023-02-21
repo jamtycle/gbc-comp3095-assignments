@@ -25,6 +25,11 @@ namespace assignment1.Models.Auction
 
         }
 
+        public AuctionModel(DataRow _auction) : base(_auction)
+        {
+
+        }
+
         public AuctionModel(DataRow _auction, DataTable _bids) : base(_auction)
         {
             bids = BidModel.BuildBids(_bids);
