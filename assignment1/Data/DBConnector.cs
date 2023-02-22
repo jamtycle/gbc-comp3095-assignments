@@ -131,16 +131,6 @@ namespace assignment1.Data
             return affected > 0;
         }
 
-#nullable enable
-        public DataTable GetMenus(UserBase? _user)
-        {
-            var info = new Hashtable() { { "@user_id", -1 } };
-            if (_user != null) info["@user_id"] = _user.UserTypeId;
-
-            return this.GetSQLData("[brb_get_menus]", info);
-        }
-#nullable disable
-
         private DataTable GetDataModel(string _model_name)
         {
             string sql = $"DECLARE @table {_model_name}; SELECT * FROM @table;";

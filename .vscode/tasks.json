@@ -2,13 +2,17 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "run-assignment1",
+            "label": "run-assignment1-linux-x64",
             "command": "dotnet",
             "type": "shell",
             "args": [
                 "run",
                 "--project",
-                "${workspaceFolder}/assignment1/assignment1.csproj"
+                "${workspaceFolder}/assignment1/assignment1.csproj",
+                "--arch",
+                "x64",
+                "--os",
+                "linux"
             ],
             "problemMatcher": "$msCompile"
         },

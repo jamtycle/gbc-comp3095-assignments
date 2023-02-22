@@ -32,7 +32,7 @@ BEGIN
 
         INSERT INTO [dbo].[user]([user_type_id], [username], [password], [session], [date_of_birth], [first_name], [last_name])
         OUTPUT inserted.user_id INTO @output
-        SELECT [user_type_id], [username], [password], [session], [date_of_birth], [first_name], [last_name] FROM @table
+        SELECT 1, [username], [password], [session], [date_of_birth], [first_name], [last_name] FROM @table
 
         SELECT * FROM @output;
 
@@ -49,7 +49,6 @@ BEGIN
 
         UPDATE  base
         SET     base.[user_type_id] = t.[user_type_id],
-                base.[username] = t.[username],
                 base.[password] = t.[password],
                 base.[session] = t.[session],
                 base.[date_of_birth] = t.[date_of_birth],
@@ -231,6 +230,21 @@ BEGIN
 
 END
 
+GO
+CREATE PROCEDURE [dbo].[brb_set_session]
+(
+    @username NVARCHAR(MAX),
+    @session NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    UPDATE  [dbo].[user]
+    SET     [session] = @session
+    WHERE   [username] = @username
+
+END
+
 -- ************************* PART 3 - Home *************************
 
 GO
@@ -251,15 +265,62 @@ END
 
 GO 
 CREATE PROCEDURE [dbo].[brb_get_last_auctions]
+(
+    @option TINYINT
+)
 AS
 BEGIN
 
-    SELECT  a.auction_id, COUNT(*) AS bids
-        INTO #total_bids
-    FROM    auction a LEFT JOIN bid b ON a.auction_id = b.auction_id
-    WHERE   end_date > CAST(GETDATE() AS DATE)
-    GROUP BY a.auction_id;
+    IF (@option = 0)
+    BEGIN
 
-    SELECT * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids)
+        SELECT  a.auction_id, COUNT(*) AS bids
+            INTO #total_bids
+        FROM    auction a LEFT JOIN bid b ON a.auction_id = b.auction_id
+        WHERE   end_date > CAST(GETDATE() AS DATE)
+        GROUP BY a.auction_id;
+
+        SELECT TOP 50 * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids)
+
+    END
+    ELSE IF (@option = 1)
+    BEGIN
+
+        SELECT TOP 50 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+
+    END
+    ELSE IF (@option = 2)
+    BEGIN
+
+        SELECT TOP 50 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+
+    END
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_auction_search]
+(
+    @search NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    SELECT * FROM auction WHERE auction_name LIKE CONCAT('%', @search, '%')
+
+END
+
+-- ************************* PART 4 - Auctions *************************
+
+GO
+CREATE PROCEDURE [dbo].[brb_get_auction]
+(
+    @auction_id INT
+)
+AS
+BEGIN
+
+    SELECT * FROM auction WHERE auction_id = @auction_id;
+    SELECT * FROM bid WHERE auction_id = @auction_id;
 
 END
