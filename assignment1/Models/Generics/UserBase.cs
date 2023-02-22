@@ -5,6 +5,14 @@ namespace assignment1.Models.Generics
     public abstract class UserBase : ModelBase
     {
         private int id;
+        private int user_type_id;
+        private string first_name;
+        private string last_name;
+        private string email;
+        private string session;
+        private string machine_name;
+        private byte[] profile_pic;
+        private DateTime date_of_birth;
 
         public UserBase() : base() { }
 
@@ -18,13 +26,13 @@ namespace assignment1.Models.Generics
         public abstract string Username { get; set; }
         public abstract string Password { get; set; }
 
-        public virtual int UserTypeId { get; set; }
-        public virtual string FirstName { get; set; }
-        public virtual string LastName { get; set; }
-        public virtual string Email { get; set; }
-        public virtual string SessionCookie { get; set; }
-        public virtual string MachineName { get; set; }
-        public virtual byte[] ProfilePic { get; set; }
-        public virtual DateTime DateOfBirth { get; set; }
+        public virtual int UserTypeId { get => user_type_id; set => user_type_id = value; }
+        public virtual string FirstName { get => first_name; set => first_name = value; }
+        public virtual string LastName { get => last_name; set => last_name = value; }
+        public virtual string Email { get => email; set => email = value; }
+        public virtual string SessionCookie { get => session; set => session = value; }
+        public virtual string MachineName { get => machine_name; set => machine_name = value; }
+        public virtual byte[] ProfilePic { get => profile_pic; set => profile_pic = value; }
+        public virtual DateTime DateOfBirth { get => date_of_birth; set => date_of_birth = value; }
     }
 }

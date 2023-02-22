@@ -58,15 +58,15 @@ namespace assignment1.Libs
 
         public bool HasActiveSession()
         {
-            string dbsession = user.SessionCookie ?? string.Empty; // TODO: Get session from DB.
-            return Utilities.ValidateString(dbsession);
+            string dbsession = user.SessionCookie;
+            return Utilities.ValidString(dbsession);
         }
         #endregion
 
         #region Passwords
         public void EncryptPassword()
         {
-            if (user.Password.Length < 8) throw new FormatException("Password MUST be more than 8 characters");
+            //if (user.Password.Length < 8) throw new FormatException("Password MUST be more than 8 characters");
             string pass = user.Password;
             PeruvianSalt(ref pass);
             user.Password = pass;
@@ -96,7 +96,7 @@ namespace assignment1.Libs
         {
             if (_word == null) return string.Empty;
             if (_word is string @word)
-                if (Utilities.ValidateString(@word)) return @word;
+                if (!Utilities.ValidString(@word)) return @word;
 
             using SHA256 sha = SHA256.Create();
             return System.Convert.ToHexString(sha.ComputeHash(UTF8.GetBytes(_word.ToString())));

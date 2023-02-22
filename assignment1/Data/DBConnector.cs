@@ -118,6 +118,19 @@ namespace assignment1.Data
             return affected > 0;
         }
 
+        public bool SetSession(string _username, string _session)
+        {
+            return this.NonQueryExecuteSQL("[brb_set_session]", new Hashtable() { { "@username", _username }, { "@session", _session } }) > 0;
+        }
+
+        public bool NewAuction(AuctionModel _auction)
+        {
+            var model = this.GetDataModel("AuctionType");
+            model.Rows.Add(_auction.ToDataRow(model));
+            int affected = this.NonQueryExecuteSQL("[brb_CRUD_auction]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
+            return affected > 0;
+        }
+
 #nullable enable
         public DataTable GetMenus(UserBase? _user)
         {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace assignment1.Controllers
 {
+    [Route("Auth")]
     public class AuthenticationController : Controller
     {
         #region Fields
@@ -33,6 +34,15 @@ namespace assignment1.Controllers
         {
             return View(_model);
         }
+
+        [HttpGet("Logout")]
+        public IActionResult Logout()
+        {
+            if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
+
+            Response.Cookies.Delete(Persistent.UserSession_Cookie);
+            return RedirectToAction("Index", "Home"); 
+        }
         #endregion
 
         #region HTTPS - POST
@@ -44,13 +54,17 @@ namespace assignment1.Controllers
 
             Auth auth = new(_login);
 
-            if (auth.HasActiveSession()) return auth.ValidateSession() ? GoToIndex() : View("SessionError");
+            if (auth.HasActiveSession()) return auth.ValidateSession() ? GoToIndex() : View(auth.User);
 
             if (auth.ValidatePassword())
             {
                 auth.GenerateSession();
-                Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions() { Expires = DateTime.Now.AddDays(7), Path = "/" });
-                return GoToIndex();
+                if(new DBConnector().SetSession(auth.User.Username, auth.User.SessionCookie))
+                {
+                    Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions() { Expires = DateTime.Now.AddDays(7), Path = "/" });
+                    return GoToIndex();
+                }
+                return View(auth.User);
             }
 
             return View(auth.User);

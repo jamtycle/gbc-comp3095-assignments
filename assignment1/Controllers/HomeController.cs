@@ -58,22 +58,4 @@ public class HomeController : BaseController
             return View(model);
         }
     }
-
-    // private IActionResult RecoverUserSession()
-    // {
-    //     string session = Request.Cookies[Persistent.UserSession_Cookie] ?? string.Empty;
-    //     if (!Utilities.ValidateString(session)) return View();
-
-    //     Auth auth = new(session); // authorize the user with the session
-
-    //     // TODO: get the menus from the database
-    //     // TODO: send to the view a LayoutModel<T> with T as IndexModel
-    //     LayoutModel<Models.Generics.UserBase> model = new()
-    //     {
-    //         Menus = new DBConnector().GetMenus(auth.User.UserTypeId),
-    //         Data = auth.User
-    //     };
-
-    //     return View(model);
-    // }
 }

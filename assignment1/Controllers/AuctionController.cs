@@ -1,4 +1,5 @@
 using assignment1.Data;
+using assignment1.Libs;
 using assignment1.Models;
 using assignment1.Models.Auction;
 using assignment1.Models.Generics;
@@ -6,11 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace assignment1.Controllers
 {
+    [Route("Auction")]
     public class AuctionController : BaseController
     {
         public AuctionController(ILogger<AuctionController> _logger) : base(_logger) { }
 
-        [HttpGet("Auction")]
+        [HttpGet("NewAuction")]
+        public IActionResult NewAuction()
+        {
+            if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
+
+            UserBase user = this.RecoverUserSession();
+            return View(new LayoutModel<AuctionModel>()
+            {
+                Menus = this.GetMenus(user),
+                Data = new AuctionModel()
+                {
+                    User_id = user.Id
+                }
+            });
+        }
+
+        [HttpGet("AuctionPage")]
         public IActionResult Auction([FromQuery(Name = "aid")] int? _aid)
         {
             if (!_aid.HasValue) return View();
@@ -37,6 +55,30 @@ namespace assignment1.Controllers
 
             if (new DBConnector().AddBid(_bid))
                 return Auction(_bid.Auction_id);
+
+            return View(model);
+        }
+
+        [HttpPost("NewAuction")]
+        public IActionResult NewAuction(AuctionModel _auction)
+        {
+            if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
+
+            UserBase user = this.RecoverUserSession();
+
+            LayoutModel<AuctionModel> model = new LayoutModel<AuctionModel>()
+            {
+                Menus = this.GetMenus(user),
+                Data = new AuctionModel()
+                {
+                    User_id = user.Id
+                }
+            };
+
+            if (!user.Id.Equals(_auction.User_id)) return View(model);
+
+            if (new DBConnector().NewAuction(_auction))
+                return RedirectToAction("Index", "Home");
 
             return View(model);
         }

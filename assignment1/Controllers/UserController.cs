@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace assignment1.Controllers
 {
+    [Route("User")]
     public class UserController : BaseController
     {
         public UserController(ILogger<BaseController> _logger) : base(_logger)
         {
         }
 
-        [HttpGet("User")]
+        [HttpGet("Profile")]
         public IActionResult UserPage([FromQuery(Name = "uid")] int? _uid)
         {
             if (!_uid.HasValue) return View("UserFallback");

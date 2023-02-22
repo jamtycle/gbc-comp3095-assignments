@@ -3,9 +3,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddRouting(opts =>
+{
+    opts.LowercaseQueryStrings = true;
+    opts.AppendTrailingSlash = true;
+});
+
 var app = builder.Build();
 
-app.UseMiddleware<assignment1.Middleware.SessionMiddleware>();
+//app.UseMiddleware<assignment1.Middleware.SessionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

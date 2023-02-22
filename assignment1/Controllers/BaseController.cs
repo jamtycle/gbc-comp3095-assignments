@@ -19,7 +19,7 @@ namespace assignment1.Controllers
         protected virtual UserBase RecoverUserSession()
         {
             string session = Request.Cookies[Persistent.UserSession_Cookie] ?? string.Empty;
-            if (!Utilities.ValidateString(session)) return null;
+            if (!Utilities.ValidString(session)) return null;
             return new Auth(session).User;
         }
 
