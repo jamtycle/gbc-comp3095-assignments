@@ -1,6 +1,7 @@
 using assignment1.Data;
 using assignment1.Models.Generics;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace assignment1.Controllers
 {
@@ -20,37 +21,63 @@ namespace assignment1.Controllers
             Models.LayoutModel<UserBase> model = new()
             {
                 User = user,
-                Menu = this.GetMenus(user),
+                Menus = this.GetMenus(user),
             };
 
-            // Modify Version
+            // Read-only Version
             if (user == null)
             {
                 UserBase otherUser = new DBConnector().GetUser(_uid.Value);
                 if (otherUser == null) return RedirectToAction("Index", "Home");
-                return View("UserView", otherUser);
+                model.Data = otherUser;
+                return View("UserView", model);
             }
 
-            model.User = user;
+            // Modify Version
             if (user.Id.Equals(_uid.Value))
-                return View("UserOwner", user);
+            {
+                model.Data = user;
+                return View("UserOwner", model);
+            }
 
-            // Read-only Version
-            return View("UserView", user);
+            model.Data = new DBConnector().GetUser(_uid.Value);
+            if (user == null) return RedirectToAction("Index", "Home");
+            return View("UserView", model);
         }
 
         [HttpPost("MakeUserSeller")]
-        public IActionResult MakeSellerUser([FromQuery(Name = "uid")] int? _uid)
+        public IActionResult MakeSellerUser(int? uid)
         {
-            if(!_uid.HasValue) return View();
-
+            if(!uid.HasValue) return View("UserView", uid);
+            
             UserBase user = this.RecoverUserSession();
+            user.UserTypeId = Libs.Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Sellers")).UserTypeId;
+            new DBConnector().UpdateUser(user);
+        
+            Models.LayoutModel<UserBase> model = new()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+            };
+            if (user == null)
+            {
+                UserBase otherUser = new DBConnector().GetUser(uid.Value);
+                if (otherUser == null) return RedirectToAction("Index", "Home");
+                model.Data = otherUser;
+                return View("UserOwner", model);
+            }
+            if (user.Id.Equals(uid.Value))
+            {
+                model.Data = user;
+                return View("UserOwner", model);
+            }
+
             user.UserTypeId = Libs.Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Sellers")).UserTypeId;
 
             if (new DBConnector().UpdateUser(user))
-                return UserPage(_uid);
+                return UserPage(uid);
 
-            return View(_uid);
+            return View(uid);
         }
     }
 }

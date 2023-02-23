@@ -1,12 +1,12 @@
-﻿@model assignment1.Models.Generics.UserBase
+﻿@model assignment1.Models.LayoutModel<assignment1.Models.Generics.UserBase>
 
 @{
     ViewData["Title"] = "UserPage";
 }
 <div>
-    <h3>@Model.Username</h3>
-    <p>@Model.FirstName + @Model.LastName</p>
-    <p>@Model.Email</p>
+    <h3>@Model.Data.Username</h3>
+    <p>@Model.Data.FirstName @Model.Data.LastName</p>
+    <p>@Model.Data.Email</p>
 </div>
 <div>
     <img src="" />
