@@ -17,8 +17,21 @@ namespace assignment1.Controllers
             if (!_uid.HasValue) return RedirectToAction("Index", "Home");
 
             UserBase user = this.RecoverUserSession();
+            Models.LayoutModel<UserBase> model = new()
+            {
+                User = user,
+                Menu = this.GetMenus(user),
+            };
 
             // Modify Version
+            if (user == null)
+            {
+                UserBase otherUser = new DBConnector().GetUser(_uid.Value);
+                if (otherUser == null) return RedirectToAction("Index", "Home");
+                return View("UserView", otherUser);
+            }
+
+            model.User = user;
             if (user.Id.Equals(_uid.Value))
                 return View("UserOwner", user);
 

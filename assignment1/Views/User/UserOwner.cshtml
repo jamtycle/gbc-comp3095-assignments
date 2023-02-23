@@ -1,0 +1,18 @@
+﻿@model assignment1.Models.Generics.UserBase
+
+@{
+    ViewData["Title"] = "UserPage";
+}
+<div>
+    <h3>@Model.Username</h3>
+    <p>@Model.FirstName + @Model.LastName</p>
+    <p>@Model.Email</p>
+    <form asp-action="MakeUserSeller" asp-controller="User" method="post">
+
+        <input type="hidden" value="@Model.Id" />
+        <button type="submit">Become a seller</button>
+    </form>
+</div>
+<div>
+    <img src="" />
+</div>

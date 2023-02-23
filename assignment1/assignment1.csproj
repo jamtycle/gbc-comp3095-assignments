@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Data">
-        <HintPath>../packages/data/Data.dll</HintPath>
-    </Reference>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <Reference Include="Data">
+        <HintPath>../packages/data/Data.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

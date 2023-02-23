@@ -29,5 +29,6 @@ namespace assignment1.Models
         }
 
         public T Data { get => data; set => data = value; }
+        public IEnumerable<MenuModel> Menu { get; internal set; }
     }
 }
