@@ -5,9 +5,9 @@
 }
 
 <h2>New Auction</h2>
-<form asp-action="NewAuction" method="post">
+@using (Html.BeginForm("NewAuction","Auction", FormMethod.Post, new { enctype ="multipart/form-data" }))
+{
 	<input type="hidden" asp-for="Data.User_id" value="@Model.User.Id"/>
-	@* Auction Name *@
 	<div class="form-outline mb-4">
 		<input type="text" asp-for="Data.Auction_name" id="auction_name" class="form-control" />
 		<label class="form-label" for="auction_name">Auction Name</label>
@@ -30,7 +30,7 @@
 	</div>
 	<div class="form-outline mb-4">
 		<label class="form-label" for="customFile">Auction Pic</label>
-		<input type="file" class="form-control" id="customFile" />
+		<input type="file" asp-for="Data.Image" class="form-control" id="customFile" />
 	</div>
-	<button type="submit" class="btn btn-primary btn-block mb-4">Create Auction</button>
-</form>
+	<button type="submit" class="btn btn-primary btn-block mb-4">Create Auction</button>	
+}

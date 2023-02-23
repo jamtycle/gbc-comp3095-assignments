@@ -64,7 +64,7 @@ namespace assignment1.Controllers
         public IActionResult NewAuction(LayoutModel<AuctionModel> _auction)
         {
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
-
+            /*_auction.Data.Image = Request.Form.Files.FirstOrDefault().CopyTo();*/
             UserBase user = this.RecoverUserSession();
 
             LayoutModel<AuctionModel> model = new LayoutModel<AuctionModel>()
