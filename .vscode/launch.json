@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-a1",
-            "program": "${workspaceFolder}/assignment1/bin/Debug/net6.0/assignment1.dll",
+            "program": "${workspaceFolder}/assignment1/bin/Debug/net6.0/linux-x64/assignment1.dll",
             "args": [], 
             "cwd": "${workspaceFolder}/assignment1",
             "stopAtEntry": false,

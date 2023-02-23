@@ -41,7 +41,7 @@ namespace assignment1.Controllers
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
 
             Response.Cookies.Delete(Persistent.UserSession_Cookie);
-            return RedirectToAction("Index", "Home"); 
+            return RedirectToAction("Index", "Home");
         }
         #endregion
 
@@ -59,9 +59,13 @@ namespace assignment1.Controllers
             if (auth.ValidatePassword())
             {
                 auth.GenerateSession();
-                if(new DBConnector().SetSession(auth.User.Username, auth.User.SessionCookie))
+                if (new DBConnector().SetSession(auth.User.Username, auth.User.SessionCookie))
                 {
-                    Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions() { Expires = DateTime.Now.AddDays(7), Path = "/" });
+                    Response.Cookies.Append("user_session", _login.SessionCookie, new CookieOptions()
+                    {
+                        Expires = DateTime.Now.AddDays(_login.RememberMe ? 7 : 1),
+                        Path = "/"
+                    });
                     return GoToIndex();
                 }
                 return View(auth.User);

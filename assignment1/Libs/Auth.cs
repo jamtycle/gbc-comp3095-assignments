@@ -86,12 +86,6 @@ namespace assignment1.Libs
         #endregion
 
         #region Encryption
-        private static string GenerateBase64(string _word)
-        {
-            return System.Convert.ToBase64String(UTF8.GetBytes(_word));
-            //return UTF8.GetString(System.Convert.FromBase64String(_word));
-        }
-
         private static string GenerateSHA256(object _word) // maybe I just should use string as parameter xd
         {
             if (_word == null) return string.Empty;

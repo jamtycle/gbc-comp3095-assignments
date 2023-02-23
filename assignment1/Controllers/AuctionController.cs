@@ -20,6 +20,7 @@ namespace assignment1.Controllers
             UserBase user = this.RecoverUserSession();
             return View(new LayoutModel<AuctionModel>()
             {
+                User = user,
                 Menus = this.GetMenus(user),
                 Data = new AuctionModel()
                 {
@@ -38,6 +39,7 @@ namespace assignment1.Controllers
 
             LayoutModel<AuctionModel> model = new()
             {
+                User = user,
                 Menus = this.GetMenus(user),
                 Data = auct
             };
@@ -49,7 +51,7 @@ namespace assignment1.Controllers
         public IActionResult PlaceBid(BidModel _bid)
         {
             UserBase user = this.RecoverUserSession();
-            LayoutModel<BidModel> model = new() { Menus = this.GetMenus(user), Data = _bid };
+            LayoutModel<BidModel> model = new() { User = user, Menus = this.GetMenus(user), Data = _bid };
 
             if (!ModelState.IsValid) return View(model);
 
@@ -60,14 +62,15 @@ namespace assignment1.Controllers
         }
 
         [HttpPost("NewAuction")]
-        public IActionResult NewAuction(AuctionModel _auction)
+        public IActionResult NewAuction(AuctionModel _auction)  
         {
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
 
             UserBase user = this.RecoverUserSession();
 
-            LayoutModel<AuctionModel> model = new LayoutModel<AuctionModel>()
+            LayoutModel<AuctionModel> model = new ()
             {
+                User = user,
                 Menus = this.GetMenus(user),
                 Data = new AuctionModel()
                 {

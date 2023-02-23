@@ -7,11 +7,13 @@ namespace assignment1.Models
 {
     public class LayoutModel
     {
+        private UserBase user;
         private IEnumerable<MenuModel> menus;
 
         public LayoutModel() { }
 
         public IEnumerable<MenuModel> Menus { get => menus; set => menus = value; }
+        public UserBase User { get => user; set => user = value; }
     }
 
     public class LayoutModel<T> : LayoutModel

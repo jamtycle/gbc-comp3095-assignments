@@ -28,10 +28,15 @@ public class HomeController : BaseController
     public IActionResult Search([FromQuery(Name = "search")] string _search)
     {
         UserBase user = this.RecoverUserSession();
-        LayoutModel<IEnumerable<AuctionModel>> model = new()
+        LayoutModel<SearchModel> model = new()
         {
+            User = user,
             Menus = this.GetMenus(user),
-            Data = new DBConnector().SearchAuctions(_search)
+            Data = new SearchModel()
+            {
+                SearchText = _search,
+                Search = new DBConnector().SearchAuctions(_search)
+            }
         };
         // new DBConnector().SearchAuctions(_search);
         return View(model);
@@ -51,6 +56,7 @@ public class HomeController : BaseController
 
             LayoutModel<IndexModel> model = new()
             {
+                User = user,
                 Menus = this.GetMenus(user),
                 Data = index
             };

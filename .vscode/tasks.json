@@ -24,7 +24,12 @@
                 "build",
                 "${workspaceFolder}/assignment1/assignment1.csproj",
                 "-property:GenerateFullPaths=true",
-                "-consoleloggerparameters:NoSummary"
+                "-consoleloggerparameters:NoSummary",
+                "--arch",
+                "x64",
+                "--os",
+                "linux",
+                "--use-current-runtime"
             ],
             "problemMatcher": "$msCompile",
             "group": {

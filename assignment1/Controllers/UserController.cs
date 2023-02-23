@@ -14,7 +14,7 @@ namespace assignment1.Controllers
         [HttpGet("Profile")]
         public IActionResult UserPage([FromQuery(Name = "uid")] int? _uid)
         {
-            if (!_uid.HasValue) return View("UserFallback");
+            if (!_uid.HasValue) return RedirectToAction("Index", "Home");
 
             UserBase user = this.RecoverUserSession();
 
