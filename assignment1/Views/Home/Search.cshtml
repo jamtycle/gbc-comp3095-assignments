@@ -1,0 +1,39 @@
+﻿@model assignment1.Models.LayoutModel
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<div id="SearchBar">
+    <table class="SearchBarTable">
+        <tbody>
+            <td>
+                <form asp-action="Search" asp-route-id="search" method="get">
+                    <input id="SearchBar-textfield" name="search" type="text" placeholder="Search" />
+                </form>   
+            </td>
+            <td>
+                <div>
+                    <select>
+                        <option value="0">AllCategories</option>
+                    </select>
+                </div>
+             </td>
+        </tbody>
+    </table>
+</div>
+
+<h1>@ViewBag.Search</h1>
+
+<div>
+    <ul>
+        @if (Model != null)
+        {
+            @foreach (var item in @ViewBag.Data)
+            {
+                
+            }
+            
+        }
+    </ul>
+</div>

@@ -1,0 +1,36 @@
+﻿@model assignment1.Models.LayoutModel<assignment1.Models.Auction.AuctionModel>;
+
+@{
+	ViewData["Title"] = "New Auction";
+}
+
+<h2>New Auction</h2>
+<form asp-action="NewAuction" method="post">
+	<input type="hidden" asp-for="Data.User_id" value="@Model.User.Id"/>
+	@* Auction Name *@
+	<div class="form-outline mb-4">
+		<input type="text" asp-for="Data.Auction_name" id="auction_name" class="form-control" />
+		<label class="form-label" for="auction_name">Auction Name</label>
+	</div>
+	<div class="form-outline mb-4">
+		<input type="text" asp-for="Data.Start_price" id="start_price" class="form-control" />
+		<label class="form-label" for="start_price">Start Price</label>
+	</div>
+	<div class="form-outline mb-4">
+		<input type="text" asp-for="Data.Buy_now_price" id="buy_now_price" class="form-control"/>
+		<label class="form-label" for="buy_now_price">Buy now price</label>
+	</div>
+	<div class="form-outline mb-4">
+		<input type="date" asp-for="Data.Start_date" id="start_date" class="form-control"/>
+		<label class="form-label" for="start_date">Start Date</label>
+	</div>
+	<div class="form-outline mb-4">
+		<input type="date" asp-for="Data.End_date" id="end_date" class="form-control" />
+		<label class="form-label" for="end_date">End Date</label>
+	</div>
+	<div class="form-outline mb-4">
+		<label class="form-label" for="customFile">Auction Pic</label>
+		<input type="file" class="form-control" id="customFile" />
+	</div>
+	<button type="submit" class="btn btn-primary btn-block mb-4">Create Auction</button>
+</form>

@@ -52,6 +52,14 @@ namespace assignment1.Data
             return new AuctionModel(info.Tables[0].Rows[0], info.Tables[1]);
         }
 
+        public AuctionModel GetLastAuctions()
+        {
+            DataSet info = this.GetMultiTables("[brb_get_last_auctions]", new Hashtable { { "@option", 1 } });
+            if (info.Tables[0].Rows.Count == 0) return new AuctionModel();
+            return new AuctionModel(info.Tables[0].Rows[0], info.Tables[1]);
+
+        }
+
         public enum LandingPageAuctionsOptions : byte { Carrousel, Last50, Last100 }
         public IEnumerable<AuctionModel> GetLastAuctions(LandingPageAuctionsOptions _option)
         {

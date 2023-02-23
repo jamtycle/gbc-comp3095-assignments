@@ -45,3 +45,22 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+
+    <div id="SearchBar">
+        <table class="SearchBarTable">
+            <tbody>
+                <td>
+                    <form asp-action="Search" asp-route-id="search" method="get">
+                        <input id="SearchBar-textfield" name="search" type="text" placeholder="Search" />
+                    </form>   
+                </td>
+                <td>
+                    <div>
+                        <select>
+                            <option value="0">AllCategories</option>
+                        </select>
+                    </div>
+                </td>
+            </tbody>
+        </table>
+    </div>
