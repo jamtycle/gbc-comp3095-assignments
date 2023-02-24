@@ -324,3 +324,24 @@ BEGIN
     SELECT * FROM bid WHERE auction_id = @auction_id;
 
 END
+
+-- ************************* PART 5 - Users *************************
+
+CREATE PROCEDURE [dbo].[brb_get_user]
+(
+    @user_id INT
+)
+AS
+BEGIN
+
+    SELECT * FROM [user] WHERE user_id = @user_id;
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_get_user_types]
+AS
+BEGIN
+    SELECT * FROM user_type;
+END
+GO
