@@ -20,15 +20,24 @@ public class HomeController : BaseController
     {
         if (Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return GetLoggedMain;
 
-        LayoutModel model = new() { Menus = this.GetMenus(null) };
+        UserBase user = this.RecoverUserSession();
+        DBConnector db = new ();
+        LayoutModel<IndexModel> model = new()
+        {
+            User = user,
+            Menus = this.GetMenus(null),
+            Data = new IndexModel()
+            {
+                AuctionList = db.GetLastAuctions(DBConnector.LandingPageAuctionsOptions.Last50),
+                Carousel = db.GetLastAuctions(DBConnector.LandingPageAuctionsOptions.Carrousel)
+            }
+        };
         return View(model);
     }
 
     [HttpGet("Search")]
     public IActionResult Search([FromQuery(Name = "search")] string _search)
     {
-        if (_search == null) return RedirectToAction("Index", "Home");
-
         UserBase user = this.RecoverUserSession();
         LayoutModel<SearchModel> model = new()
         {
@@ -36,13 +45,11 @@ public class HomeController : BaseController
             Menus = this.GetMenus(user),
             Data = new SearchModel()
             {
-                SearchText = _search,
+                SearchText = _search ?? string.Empty,
                 Search = new DBConnector().SearchAuctions(_search)
             }
         };
-        // new DBConnector().SearchAuctions(_search);
-        ViewBag.Search = _search;
-        ViewBag.Data = model.Data;
+
         return View(model);
     }
 

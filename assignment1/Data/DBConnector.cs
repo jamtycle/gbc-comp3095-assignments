@@ -81,7 +81,7 @@ namespace assignment1.Data
             // });
 
             // Option 2 - Database Search
-            DataTable data = this.GetSQLData("[brb_auction_search]", new Hashtable() { { "@search", _search } });
+            DataTable data = this.GetSQLData("[brb_auction_search]", new Hashtable() { { "@search", _search ?? string.Empty } });
             foreach (DataRow row in data.Rows)
                 yield return new AuctionModel(row);
 

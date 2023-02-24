@@ -277,7 +277,7 @@ BEGIN
         SELECT  a.auction_id, COUNT(*) AS bids
             INTO #total_bids
         FROM    auction a LEFT JOIN bid b ON a.auction_id = b.auction_id
-        WHERE   end_date > CAST(GETDATE() AS DATE)
+        WHERE   end_date < CAST(GETDATE() AS DATE)
         GROUP BY a.auction_id;
 
         SELECT TOP 50 * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids)
@@ -286,13 +286,13 @@ BEGIN
     ELSE IF (@option = 1)
     BEGIN
 
-        SELECT TOP 50 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 50 * FROM auction WHERE end_date < CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
     ELSE IF (@option = 2)
     BEGIN
 
-        SELECT TOP 50 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 50 * FROM auction WHERE end_date < CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
 

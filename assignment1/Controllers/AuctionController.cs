@@ -24,7 +24,7 @@ namespace assignment1.Controllers
                 Menus = this.GetMenus(user),
                 Data = new AuctionModel()
                 {
-                    User_id = user.Id
+                    UserId = user.Id
                 }
             });
         }
@@ -68,16 +68,17 @@ namespace assignment1.Controllers
             /*_auction.Data.Image = Request.Form.Files.FirstOrDefault().CopyTo();*/
             UserBase user = this.RecoverUserSession();
 
-            LayoutModel<AuctionModel> model = new LayoutModel<AuctionModel>()
+            LayoutModel<AuctionModel> model = new()
             {
+                User = user,
                 Menus = this.GetMenus(user),
                 Data = new AuctionModel()
                 {
-                    User_id = user.Id
+                    UserId = user.Id
                 }
             };
 
-            if (!user.Id.Equals(_auction.Data.User_id)) return View(model);
+            if (!user.Id.Equals(_auction.Data.UserId)) return View(model);
 
             if (new DBConnector().NewAuction(_auction.Data))
                 return RedirectToAction("Index", "Home");

@@ -1,4 +1,4 @@
-﻿@model assignment1.Models.LayoutModel<IEnumerable<assignment1.Models.Auction.AuctionModel>>;
+﻿@model assignment1.Models.LayoutModel<assignment1.Models.Home.SearchModel>;
 
 
 @{
@@ -11,7 +11,7 @@
             <td>
                 <form asp-action="Search" asp-route-id="search" method="get">
                     <input id="SearchBar-textfield" name="search" type="text" placeholder="Search" />
-                </form>   
+                </form>
             </td>
             <td>
                 <div>
@@ -19,24 +19,20 @@
                         <option value="0">AllCategories</option>
                     </select>
                 </div>
-             </td>
+            </td>
         </tbody>
     </table>
 </div>
 
-<h2>Search results for: @ViewBag.Search</h2>
+<h2>Search results for: @Model.Data.SearchText</h2>
 
 <div>
     <ul>
-        @if (Model != null)
+        @foreach (var item in @Model?.Data?.Search)
         {
-            @foreach (var item in @ViewBag.Data)
-            {
-                <li>
-                    @item.Auction_name
-                </li>
-            }
-            
+            <li>
+                @item.AuctionName
+            </li>
         }
     </ul>
 </div>
