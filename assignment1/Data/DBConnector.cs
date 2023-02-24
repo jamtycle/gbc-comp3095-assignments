@@ -110,10 +110,10 @@ namespace assignment1.Data
                 yield return new { UserTypeId = row["user_type_id"], UserTypeName = row["user_type_name"] };
         }
 
-        public bool UpdateUser(UserBase _user)
+        public bool UpdateUser(UserBase _user, bool _deep_copy = false)
         {
             var model = GetDataModel("UserType");
-            model.Rows.Add(_user.ToDataRow(model));
+            model.Rows.Add(_user.ToDataRow(model, _deep_copy));
             int affected = this.NonQueryExecuteSQL("[brb_CRUD_user]", new Hashtable() { { "@table", model }, { "@type", CRUD.Update } });
             return affected > 0;
         }

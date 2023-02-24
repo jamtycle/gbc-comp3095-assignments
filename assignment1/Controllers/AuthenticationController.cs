@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics;
 using assignment1.Data;
 using assignment1.Libs;
@@ -84,6 +85,13 @@ namespace assignment1.Controllers
 
             if (new DBConnector().NewUser((RegistrationModel)auth.User))
             {
+                string body = string.Format(Persistent.VerificationEmail, _user.Username, $"");
+                new MailTOGO.Sending(body, Persistent.EmailInfo)
+                {
+                    IsHTML = true,
+                    Subject = "Best Auction - Email Verification",
+                    To = new string[1] { _user.Email },
+                }.MailTOGO();
                 return GoToIndex();
                 // return View("AuthResult", new AuthInfoModel() { Title = "Registration Success", Message = "The registration was a success, please log in now!" });
             }

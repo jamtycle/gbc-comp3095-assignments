@@ -10,6 +10,9 @@
     <Reference Include="Data">
         <HintPath>../packages/data/Data.dll</HintPath>
     </Reference>
+    <Reference Include="MailTOGO">
+        <HintPath>../packages/mailtogo/MailTOGO.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -24,13 +24,18 @@ namespace assignment1.Models.Generics
                     field.SetValue(this, _row[field.Name] is DBNull ? null : _row[field.Name]);
         }
 
-        public DataRow ToDataRow(DataTable _skeleton)
+        public DataRow ToDataRow(DataTable _skeleton, bool _deep_copy = false)
         {
             DataRow row = _skeleton.NewRow();
-            var fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+
+            IEnumerable<FieldInfo> fields;
+            if (_deep_copy) fields = GetDeepFields;
+            else fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+
             foreach (FieldInfo field in fields)
                 if (_skeleton.Columns.Contains(field.Name))
                     row[field.Name] = field.GetValue(this) ?? DBNull.Value;
+                    
             return row;
         }
 
