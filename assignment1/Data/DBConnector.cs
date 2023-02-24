@@ -136,5 +136,11 @@ namespace assignment1.Data
             string sql = $"DECLARE @table {_model_name}; SELECT * FROM @table;";
             return this.GetSQLData(sql);
         }
+        public UserBase GetUser(int _id)
+        {
+            DataTable info = this.GetSQLData("[brb_get_user]", new Hashtable() { { "@user_id", _id } });
+            if (info.Rows.Count == 0) return null;
+            return new LoginModel(info.Rows[0]);
+        }
     }
 }

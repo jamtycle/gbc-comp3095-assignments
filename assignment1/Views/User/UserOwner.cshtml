@@ -1,0 +1,26 @@
+﻿@model assignment1.Models.LayoutModel<assignment1.Models.Generics.UserBase>
+
+@{
+    ViewData["Title"] = "UserPage";
+}
+<div>
+    <h3>@Model.Data.Username</h3>
+    <p>@Model.Data.FirstName @Model.Data.LastName</p>
+    <p>@Model.Data.Email</p>
+
+    @if (Model.User.UserTypeId == 1)
+    {
+        <form asp-action="MakeUserSeller" asp-controller="User" method="post">
+
+        <input type="hidden" value="@Model.Data.Id" name="uid" id="uid"/>
+        <button type="submit">Become a seller</button>
+        </form>
+    }
+    else
+        {
+            <p>Success! You're a Seller!</p>
+        }
+        </div>
+<div>
+    <img src="" />
+</div>
