@@ -62,15 +62,14 @@ namespace assignment1.Controllers
         }
 
         [HttpPost("NewAuction")]
-        public IActionResult NewAuction(AuctionModel _auction)  
+        public IActionResult NewAuction(LayoutModel<AuctionModel> _auction)
         {
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
-
+            /*_auction.Data.Image = Request.Form.Files.FirstOrDefault().CopyTo();*/
             UserBase user = this.RecoverUserSession();
 
-            LayoutModel<AuctionModel> model = new ()
+            LayoutModel<AuctionModel> model = new LayoutModel<AuctionModel>()
             {
-                User = user,
                 Menus = this.GetMenus(user),
                 Data = new AuctionModel()
                 {
@@ -78,9 +77,9 @@ namespace assignment1.Controllers
                 }
             };
 
-            if (!user.Id.Equals(_auction.User_id)) return View(model);
+            if (!user.Id.Equals(_auction.Data.User_id)) return View(model);
 
-            if (new DBConnector().NewAuction(_auction))
+            if (new DBConnector().NewAuction(_auction.Data))
                 return RedirectToAction("Index", "Home");
 
             return View(model);

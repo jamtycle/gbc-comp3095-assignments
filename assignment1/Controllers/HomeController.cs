@@ -27,6 +27,8 @@ public class HomeController : BaseController
     [HttpGet("Search")]
     public IActionResult Search([FromQuery(Name = "search")] string _search)
     {
+        if (_search == null) return RedirectToAction("Index", "Home");
+
         UserBase user = this.RecoverUserSession();
         LayoutModel<SearchModel> model = new()
         {
@@ -39,6 +41,8 @@ public class HomeController : BaseController
             }
         };
         // new DBConnector().SearchAuctions(_search);
+        ViewBag.Search = _search;
+        ViewBag.Data = model.Data;
         return View(model);
     }
 

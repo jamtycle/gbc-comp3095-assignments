@@ -1,4 +1,5 @@
 using System.Data;
+using System.ComponentModel.DataAnnotations;
 using assignment1.Models.Generics;
 
 namespace assignment1.Models.Auction
@@ -20,6 +21,8 @@ namespace assignment1.Models.Auction
 
         private IEnumerable<BidModel> bids;
 
+        private byte[] image;
+
         public AuctionModel() : base()
         {
 
@@ -36,12 +39,16 @@ namespace assignment1.Models.Auction
         }
 
         public int Auction_id { get => auction_id; set => auction_id = value; }
+        
         public int User_id { get => user_id; set => user_id = value; }
-
         public string Auction_name { get => auction_name; set => auction_name = value; }
+        [Required]
         public double Start_price { get => start_price; set => start_price = value; }
+        [Required]
         public double Buy_now_price { get => buy_now_price; set => buy_now_price = value; }
+        [Required]
         public DateTime Start_date { get => start_date; set => start_date = value; }
+        [Required]
         public DateTime End_date { get => end_date; set => end_date = value; }
 
         public float Comission { get => comission; set => comission = value; }
@@ -49,5 +56,7 @@ namespace assignment1.Models.Auction
         public float Discount_percentage { get => discount_percentage; set => discount_percentage = value; }
 
         public IEnumerable<BidModel> Bids { get => bids; set => bids = value; }
+
+        public byte[] Image { get => image; set => image = value;}
     }
 }

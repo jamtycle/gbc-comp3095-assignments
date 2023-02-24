@@ -4,7 +4,7 @@ namespace assignment1.Models.Generics
 {
     public abstract class UserBase : ModelBase
     {
-        private int id;
+        private int user_id;
         private int user_type_id;
         private string first_name;
         private string last_name;
@@ -21,7 +21,7 @@ namespace assignment1.Models.Generics
             this.FromDataRow(_row);
         }
 
-        public virtual int Id { get => id; set => id = value; }
+        public virtual int Id { get => user_id; set => user_id = value; }
 
         public abstract string Username { get; set; }
         public abstract string Password { get; set; }

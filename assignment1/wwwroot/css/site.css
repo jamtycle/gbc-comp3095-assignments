@@ -20,3 +20,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.SearchBarTable {
+    margin: 6px auto;
+    width: 750px;
+    padding: 5px;
+}
+
+#SearchBar-textfield {
+    width: 100%;
+}
