@@ -33,7 +33,7 @@
             @foreach (var item in @ViewBag.Data)
             {
                 <li>
-                    @item.Auction_name
+                    <a asp-controller="Auction" asp-action="AuctionPage" asp-route-aid="@item.Auction_id">@item.Auction_name</a>
                 </li>
             }
             
