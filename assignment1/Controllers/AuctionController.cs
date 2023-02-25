@@ -46,6 +46,23 @@ namespace assignment1.Controllers
             return View(model);
         }
 
+        [HttpGet("PlaceBid")]
+        public IActionResult PlaceBid([FromQuery(Name = "aid")] int? _aid)
+        {
+            if (!_aid.HasValue) return View();
+
+            AuctionModel auct = new DBConnector().GetAuction(_aid.Value);
+            UserBase user = this.RecoverUserSession();
+
+            LayoutModel<AuctionModel> model = new()
+            {
+                Menus = this.GetMenus(user),
+                Data = auct
+            };
+
+            return View(model);
+        }
+
         [HttpPost("PlaceBid")]
         public IActionResult PlaceBid(BidModel _bid)
         {
