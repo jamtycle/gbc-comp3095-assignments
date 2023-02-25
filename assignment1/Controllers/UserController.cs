@@ -14,9 +14,12 @@ namespace assignment1.Controllers
         [HttpGet("Profile")]
         public IActionResult UserPage([FromQuery(Name = "uid")] int? _uid)
         {
-            if (!_uid.HasValue) return RedirectToAction("Index", "Home");
-
             UserBase user = this.RecoverUserSession();
+
+            if (!_uid.HasValue)
+                if (user != null) _uid = user.Id;
+                else return RedirectToAction("Index", "Home");
+
             UserBase other = new DBConnector().GetUser(_uid.Value);
 
             if (user == null) // Not logged in
@@ -37,7 +40,7 @@ namespace assignment1.Controllers
             });
 
             // Logged in and not same usr
-            return View("User", new LayoutModel<UserBase>()
+            return View("UserView", new LayoutModel<UserBase>()
             {
                 User = user,
                 Menus = this.GetMenus(user),
@@ -65,7 +68,7 @@ namespace assignment1.Controllers
                 User = user,
                 Menus = this.GetMenus(user),
                 Data = user
-            }); 
+            });
         }
     }
 }

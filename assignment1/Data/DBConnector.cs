@@ -131,11 +131,17 @@ namespace assignment1.Data
             return affected > 0;
         }
 
+        public bool UserValidationKey(string _key)
+        {
+            return this.NonQueryExecuteSQL("[brb_user_validation_key]", new Hashtable() { { "@key", _key } }) > 0;
+        }
+
         private DataTable GetDataModel(string _model_name)
         {
             string sql = $"DECLARE @table {_model_name}; SELECT * FROM @table;";
             return this.GetSQLData(sql);
         }
+        
         public UserBase GetUser(int _id)
         {
             DataTable info = this.GetSQLData("[brb_get_user]", new Hashtable() { { "@user_id", _id } });

@@ -35,8 +35,17 @@ namespace assignment1.Libs
             {
                 @reg.VerifyPassword = null;
                 EncryptPassword();
+                this.GenerateEmailValidationKey();
             }
         }
+
+        #region UserValidation
+        private void GenerateEmailValidationKey()
+        {
+            string key = GenerateBase64(UTF8.GetBytes(Guid.NewGuid().ToString()));
+            this.user.ValidationKey = key;
+        }
+        #endregion
 
         #region Sessions
         public void GenerateSession()
@@ -86,6 +95,11 @@ namespace assignment1.Libs
         #endregion
 
         #region Encryption
+        private static string GenerateBase64(byte[] _word_bytes)
+        {
+            return System.Convert.ToBase64String(_word_bytes);
+        }
+
         private static string GenerateSHA256(object _word) // maybe I just should use string as parameter xd
         {
             if (_word == null) return string.Empty;
@@ -106,7 +120,7 @@ namespace assignment1.Libs
 
             int blade = 0;
             foreach (double blender in crakers)
-            { 
+            {
                 //if (!double.IsFinite(blender)) blender = double.Epsilon;
                 _potatoes = _potatoes.Insert(++blade, new string((char)(long)(!double.IsFinite(blender) ? double.Epsilon : blender), 1));
                 blade++;

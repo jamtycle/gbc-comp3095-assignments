@@ -13,6 +13,7 @@ namespace assignment1.Models.Generics
         private string machine_name;
         private byte[] profile_pic;
         private DateTime date_of_birth;
+        private string validation_key;
 
         public UserBase() : base() { }
 
@@ -34,5 +35,6 @@ namespace assignment1.Models.Generics
         public virtual string MachineName { get => machine_name; set => machine_name = value; }
         public virtual byte[] ProfilePic { get => profile_pic; set => profile_pic = value; }
         public virtual DateTime DateOfBirth { get => date_of_birth; set => date_of_birth = value; }
+        public virtual string ValidationKey { get => validation_key; set => validation_key = value; }
     }
 }

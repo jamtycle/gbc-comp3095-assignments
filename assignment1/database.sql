@@ -4,6 +4,7 @@ USE [Decompressor];
 -- DROP TYPE [dbo].[UserType];
 
 -- ************************* PART 1 - CRUD *************************
+-- DROP TYPE [dbo].[UserType];
 
 CREATE TYPE [dbo].[UserType] AS TABLE(
     [user_id] INT NULL,
@@ -12,8 +13,11 @@ CREATE TYPE [dbo].[UserType] AS TABLE(
     [password] NVARCHAR(MAX) NULL,
     [session] NVARCHAR(MAX) NULL,
     [date_of_birth] DATE NULL,
-    [first_name] NVARCHAR(MAX) NULL,
-    [last_name] NVARCHAR(MAX) NULL
+    [first_name] NVARCHAR(200) NULL,
+    [last_name] NVARCHAR(200) NULL,
+    [validation_key] NVARCHAR(MAX) NULL, 
+    [email] NVARCHAR(200) NULL, 
+    [profile_pic] IMAGE
 )
 GO
 
@@ -30,9 +34,9 @@ BEGIN
 
         DECLARE @output TABLE (id INT);
 
-        INSERT INTO [dbo].[user]([user_type_id], [username], [password], [session], [date_of_birth], [first_name], [last_name])
+        INSERT INTO [dbo].[user]([user_type_id], [username], [password], [session], [date_of_birth], [first_name], [last_name], [validation_key], [email], [profile_pic])
         OUTPUT inserted.user_id INTO @output
-        SELECT 1, [username], [password], [session], [date_of_birth], [first_name], [last_name] FROM @table
+        SELECT 1, [username], [password], [session], [date_of_birth], [first_name], [last_name], [validation_key], [email], [profile_pic] FROM @table
 
         SELECT * FROM @output;
 
@@ -41,7 +45,8 @@ BEGIN
     BEGIN
 
         SELECT  [user_id], [user_type_id], [username], [password], [session], [date_of_birth], [first_name], [last_name]
-        FROM    [dbo].[user];
+        FROM    [dbo].[user]
+        WHERE   [user_id] = -1;
 
     END
     ELSE IF (@type = 2) -- UPDATE
@@ -53,7 +58,10 @@ BEGIN
                 base.[session] = t.[session],
                 base.[date_of_birth] = t.[date_of_birth],
                 base.[first_name] = t.[first_name],
-                base.[last_name] = t.[last_name]
+                base.[last_name] = t.[last_name],
+                base.[validation_key] = t.[validation_key],
+                base.[email] = t.[email],
+                base.[profile_pic] = t.[profile_pic]
         FROM    [dbo].[user] base JOIN @table t ON base.user_id = t.user_id;
 
     END
@@ -208,7 +216,7 @@ BEGIN
     SET     [session] = NULL
     WHERE   username = @username AND [session] IS NOT NULL
 
-    SELECT * FROM [user] WHERE username = @username;
+    SELECT * FROM [user] WHERE username = @username AND [validation_key] IS NULL;
 
 END
 
@@ -264,7 +272,7 @@ BEGIN
 END
 
 GO 
-CREATE PROCEDURE [dbo].[brb_get_last_auctions]
+ALTER PROCEDURE [dbo].[brb_get_last_auctions]
 (
     @option TINYINT
 )
@@ -277,7 +285,7 @@ BEGIN
         SELECT  a.auction_id, COUNT(*) AS bids
             INTO #total_bids
         FROM    auction a LEFT JOIN bid b ON a.auction_id = b.auction_id
-        WHERE   end_date < CAST(GETDATE() AS DATE)
+        WHERE   end_date > CAST(GETDATE() AS DATE)
         GROUP BY a.auction_id;
 
         SELECT TOP 50 * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids)
@@ -286,14 +294,18 @@ BEGIN
     ELSE IF (@option = 1)
     BEGIN
 
-        SELECT TOP 50 * FROM auction WHERE end_date < CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 50 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
     ELSE IF (@option = 2)
     BEGIN
 
-        SELECT TOP 50 * FROM auction WHERE end_date < CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 100 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
+    END
+    ELSE IF (@option = 3)
+    BEGIN
+        SELECT TOP 50 * FROM auction WHERE end_date < CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
     END
 
 END
@@ -306,7 +318,10 @@ CREATE PROCEDURE [dbo].[brb_auction_search]
 AS
 BEGIN
 
-    SELECT * FROM auction WHERE auction_name LIKE CONCAT('%', @search, '%')
+    SELECT  * 
+    FROM    auction 
+    WHERE   auction_name LIKE CONCAT('%', @search, '%') 
+    ORDER BY [start_price] 
 
 END
 
@@ -326,7 +341,7 @@ BEGIN
 END
 
 -- ************************* PART 5 - Users *************************
-
+GO
 CREATE PROCEDURE [dbo].[brb_get_user]
 (
     @user_id INT
@@ -334,7 +349,9 @@ CREATE PROCEDURE [dbo].[brb_get_user]
 AS
 BEGIN
 
-    SELECT * FROM [user] WHERE user_id = @user_id;
+    SELECT user_id, user_type_id, username, [session], date_of_birth, first_name, last_name, email, profile_pic
+    FROM [user] 
+    WHERE user_id = @user_id;
 
 END
 
@@ -345,3 +362,16 @@ BEGIN
     SELECT * FROM user_type;
 END
 GO
+
+CREATE PROCEDURE [dbo].[brb_user_validation_key]
+(
+    @key NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    UPDATE  [user]
+    SET     [validation_key] = NULL
+    WHERE   [validation_key] = @key
+
+END

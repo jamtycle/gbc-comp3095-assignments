@@ -14,19 +14,9 @@ namespace assignment1.Libs
         #region Email
         public static string VerificationEmail
         {
-            get {
-                return @"<div style='display: flex; flex-direction: column; font-family: 'Segoe UI', sans-serif;'>
-                            <div
-                                style='display: flex; border-radius: 30px; flex-direction: column; flex-wrap: nowrap; align-items: center; padding: 1em; color: #000'>
-                                <h2>Hi {0}!</h2>
-                                <p style='text-align: center;'>Thanks for register to our webpage! <br> Please click in the
-                                    link below to verify your account!</p>
-
-                                <a href='{1}' target='_blank'
-                                    style='text-decoration: none; background-color: #3B71CA; color: #fff; padding: .5em .9em; border-radius: 20px; font-weight: bold;'>Verify
-                                    your email!</a>
-                            </div>
-                         </div>";
+            get
+            {
+                return "<div\n    style=\"display: grid; border-radius: 30px; flex-direction: column; flex-wrap: nowrap; align-items: center; padding: 1em; color: #000\">\n\n    <h2 style=\"text-align: center;\">Hi {0}!</h2>\n    <p style=\"text-align: center;\">Thanks for register to our webpage! <br> Please click\n        in the\n        link below to verify your account!</p>\n\n    <a href=\"{1}\" target=\"_blank\"\n        style=\"text-decoration: none; background-color: #3B71CA; color: #fff; padding: .5em .9em; border-radius: 20px; font-weight: bold; width: fit-content; margin: auto;\">Verify\n\n        your email!</a>\n</div>";
             }
         }
 
@@ -36,8 +26,8 @@ namespace assignment1.Libs
             {
                 return new()
                 {
-                    { "account", "Decompresor.Agrosoft@gmail.com" },
-                    { "pass",    "$:Agrosoft$:Who++" }
+                    { "account", "no.reply.jam.helper@gmail.com" },
+                    { "pass",    "mqaobscyjiybxixr" }
                 };
             }
         }

@@ -44,6 +44,22 @@ namespace assignment1.Controllers
             Response.Cookies.Delete(Persistent.UserSession_Cookie);
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet("ValidateUser")]
+        public IActionResult ValidateUser(string key)
+        {
+            if(new DBConnector().UserValidationKey(key))
+            {
+                ViewBag.Message = "Yout account have been validated 👍";
+                return View();
+            }
+
+            // Guid.NewGuid().ToByteArray()
+            // System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String("AJHZIuGnlEK0t0+z/Y9wWg=="))
+
+            ViewBag.Message = "There was a problem while validating your account 😔";
+            return View();
+        }
         #endregion
 
         #region HTTPS - POST
@@ -85,14 +101,16 @@ namespace assignment1.Controllers
 
             if (new DBConnector().NewUser((RegistrationModel)auth.User))
             {
-                string body = string.Format(Persistent.VerificationEmail, _user.Username, $"");
-                new MailTOGO.Sending(body, Persistent.EmailInfo)
+                string body = string.Format(Persistent.VerificationEmail, _user.Username, $"http://localhost:5091/Auth/ValidateUser?key={auth.User.ValidationKey}");
+                string status = new MailTOGO.Sending(body, Persistent.EmailInfo)
                 {
                     IsHTML = true,
                     Subject = "Best Auction - Email Verification",
                     To = new string[1] { _user.Email },
                 }.MailTOGO();
-                return GoToIndex();
+
+                if (status.Equals("send")) return GoToIndex();
+                else return View(auth.User);
                 // return View("AuthResult", new AuthInfoModel() { Title = "Registration Success", Message = "The registration was a success, please log in now!" });
             }
             else return View(auth.User);

@@ -13,6 +13,7 @@ namespace assignment1.Models.Auth
         private string last_name;
         private string email;
         private DateTime date_of_birth;
+        private string validation_key;
 
         public RegistrationModel() : base() { }
 
@@ -34,5 +35,6 @@ namespace assignment1.Models.Auth
         public override string Email { get => email; set => email = value; }
         [Required]
         public override DateTime DateOfBirth { get => date_of_birth; set => date_of_birth = value; }
+        public override string ValidationKey { get => validation_key; set => validation_key = value; }
     }
 }
