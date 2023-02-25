@@ -77,6 +77,10 @@ BEGIN
 END
 GO
 
+-- SELECT * FROM auction
+
+-- DROP TYPE [AuctionType]
+
 CREATE TYPE [dbo].[AuctionType] AS TABLE(
 	[auction_id] [int] NULL,
 	[user_id] [int] NULL,
@@ -87,7 +91,10 @@ CREATE TYPE [dbo].[AuctionType] AS TABLE(
 	[end_date] [datetime2](0) NULL,
 	[comission] [decimal](8, 2) NULL,
 	[tax] [decimal](8, 2) NULL,
-	[discount_percentage] [decimal](8, 2) NULL
+	[discount_percentage] [decimal](8, 2) NULL,
+    [condition] NVARCHAR(MAX) NULL,
+    [description] NVARCHAR(MAX) NULL,
+    [image] IMAGE NULL
 )
 GO
 
@@ -102,15 +109,19 @@ BEGIN
     IF (@type = 0) -- CREATE
     BEGIN
 
-        INSERT INTO auction(user_id, auction_name, start_price, buy_now_price, [start_date], end_date, comission, tax, discount_percentage)
-        SELECT user_id, auction_name, start_price, buy_now_price, [start_date], end_date, comission, tax, discount_percentage FROM @table
+        INSERT INTO auction(user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image])
+        SELECT user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image] FROM @table
+
+        -- comission, tax, discount_percentage
+        -- comission, tax, discount_percentage
 
     END
     ELSE IF (@type = 1) -- READ
     BEGIN
 
-        SELECT  auction_id, user_id, auction_name, start_price, buy_now_price, [start_date], end_date, comission, tax, discount_percentage
-        FROM    auction;
+        SELECT  *
+        FROM    auction
+        WHERE   auction_id = -1;
 
     END
     ELSE IF (@type = 2) -- UPDATE
@@ -122,16 +133,20 @@ BEGIN
                 base.buy_now_price = t.buy_now_price,
                 base.[start_date] = t.[start_date],
                 base.end_date = t.end_date,
-                base.comission = t.comission,
-                base.tax = t.tax,
-                base.discount_percentage = t.discount_percentage
+                -- base.comission = t.comission,
+                -- base.tax = t.tax,
+                -- base.discount_percentage = t.discount_percentage,
+                base.condition = t.condition,
+                base.[description] = t.[description],
+                base.[image] = t.[image]
         FROM    auction base JOIN @table t ON base.auction_id = t.auction_id
 
     END
     ELSE IF (@type = 3) -- DELETE
     BEGIN
 
-        PRINT 'No can do amigo :c';
+        DELETE base FROM auction base JOIN @table t ON base.auction_id = t.auction_id
+        -- PRINT 'No can do amigo :c';
         -- DELETE f FROM flight f JOIN @table t ON f.flight_number = t.flight_number
 
     END

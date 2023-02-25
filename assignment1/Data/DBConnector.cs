@@ -123,12 +123,14 @@ namespace assignment1.Data
             return this.NonQueryExecuteSQL("[brb_set_session]", new Hashtable() { { "@username", _username }, { "@session", _session } }) > 0;
         }
 
-        public bool NewAuction(AuctionModel _auction)
+        public int NewAuction(AuctionModel _auction)
         {
             var model = this.GetDataModel("AuctionType");
             model.Rows.Add(_auction.ToDataRow(model));
-            int affected = this.NonQueryExecuteSQL("[brb_CRUD_auction]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
-            return affected > 0;
+            DataTable info = this.GetSQLData("[brb_CRUD_auction]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
+            // int affected = this.NonQueryExecuteSQL("[brb_CRUD_auction]", new Hashtable() { { "@table", model }, { "@type", CRUD.Create } });
+            if (info.Rows.Count == 0) return -1;
+            return (int)info.Rows[0]["id"];
         }
 
         public bool UserValidationKey(string _key)

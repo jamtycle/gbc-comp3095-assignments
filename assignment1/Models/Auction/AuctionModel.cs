@@ -23,6 +23,7 @@ namespace assignment1.Models.Auction
 
         private byte[] image;
         private string condition;
+        private string description;
 
         public AuctionModel() : base() { }
 
@@ -57,7 +58,10 @@ namespace assignment1.Models.Auction
 
         public IEnumerable<BidModel> Bids { get => bids; set => bids = value; }
 
+        // [Required] // Uncomment this if this is important.
         public byte[] Image { get => image; set => image = value; }
+        [Required] 
         public string Condition { get => condition; set => condition = value; }
+        public string Description { get => description; set => description = value; }
     }
 }

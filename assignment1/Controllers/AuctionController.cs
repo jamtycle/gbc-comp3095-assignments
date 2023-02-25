@@ -44,7 +44,7 @@ namespace assignment1.Controllers
                 Data = auct
             };
 
-            return View(model);
+            return View("Auction", model);
         }
 
         [HttpPost("PlaceBid")]
@@ -65,7 +65,11 @@ namespace assignment1.Controllers
         public IActionResult NewAuction(LayoutModel<AuctionModel> _auction)
         {
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
+
             /*_auction.Data.Image = Request.Form.Files.FirstOrDefault().CopyTo();*/
+            if (!ModelState.IsValid) return View(_auction);
+
+            _auction.Data.Image = GetImageFromRequest("auction_pic");
             UserBase user = this.RecoverUserSession();
 
             LayoutModel<AuctionModel> model = new()
@@ -80,10 +84,18 @@ namespace assignment1.Controllers
 
             if (!user.Id.Equals(_auction.Data.UserId)) return View(model);
 
-            if (new DBConnector().NewAuction(_auction.Data))
-                return RedirectToAction("Index", "Home");
+            int nid = new DBConnector().NewAuction(_auction.Data);
+            if (nid == -1)
+                return View(model); //RedirectToAction("Index", "Home");
 
-            return View(model);
+            return Auction(nid);
+        }
+
+        public byte[] GetImageFromRequest(string _name)
+        {
+            using var ms = new MemoryStream();
+            Request.Form.Files[_name].CopyTo(ms);
+            return ms.ToArray();
         }
     }
 }
