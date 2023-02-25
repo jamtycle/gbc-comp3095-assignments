@@ -1,0 +1,14 @@
+﻿@model assignment1.Models.LayoutModel<assignment1.Models.Auction.BidModel>;
+
+@{
+	Layout = "~/Views/Shared/_PlaceBidLayout.cshtml";
+}
+<br />
+<form asp-controller="Auction" asp-action="PlaceBid" method="post">
+	<div class="form-outline mb-4">
+		<input type="text" asp-for="Data.Bid_amount" id="bid_amount" class="form-control" />
+		<label class="form-label" for="bid_amount">Bid Amount</label>
+	</div>
+
+	<button type="submit" class="btn btn-primary btn-block mb-4">Place Bid</button>
+</form>
