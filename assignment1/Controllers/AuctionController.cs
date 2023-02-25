@@ -56,7 +56,7 @@ namespace assignment1.Controllers
             if (!ModelState.IsValid) return View(model);
 
             if (new DBConnector().AddBid(_bid))
-                return Auction(_bid.Auction_id);
+                return Auction(_bid.AuctionId);
 
             return View(model);
         }

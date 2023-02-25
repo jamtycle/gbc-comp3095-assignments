@@ -98,7 +98,7 @@ CREATE TYPE [dbo].[AuctionType] AS TABLE(
 )
 GO
 
-CREATE PROCEDURE [dbo].[brb_CRUD_auction]
+ALTER PROCEDURE [dbo].[brb_CRUD_auction]
 (
     @type TINYINT,
     @table AuctionType READONLY 
@@ -109,9 +109,13 @@ BEGIN
     IF (@type = 0) -- CREATE
     BEGIN
 
+        DECLARE @output TABLE (id INT);
+
         INSERT INTO auction(user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image])
+        OUTPUT inserted.auction_id INTO @output
         SELECT user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image] FROM @table
 
+        SELECT * FROM @output;
         -- comission, tax, discount_percentage
         -- comission, tax, discount_percentage
 
@@ -336,6 +340,7 @@ BEGIN
     SELECT  * 
     FROM    auction 
     WHERE   auction_name LIKE CONCAT('%', @search, '%') 
+            AND end_date > CAST(GETDATE() AS DATE)
     ORDER BY [start_price] 
 
 END

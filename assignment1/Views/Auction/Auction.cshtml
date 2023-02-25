@@ -4,18 +4,63 @@
     ViewData["Title"] = "Auction Page";
 }
 
-<div>
-    <div>
+<div class="card mb-3 w-100">
+    <div class="row g-0 w-100">
+        <div class="col-md-4">
+            <img src="@Model.Data.Base64Image" class="rounded-4 img-fluid rounded-start w-100 h-100" style="object-fit: cover;" alt="@Model.Data.AuctionName" />
+        </div>
+        <div class="col-md-8">
+            <div class="d-flex flex-column text-center">
+                <h2 class="card-title mb-2">@Model.Data.AuctionName</h2>
+                <p class="card-text mb-2">@Model.Data.Description</p>
+            </div>
+            <ul class="list-group list-group-light list-group-small flex-row">
+                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartDate.ToShortDateString()</li>
+                <li class="list-group-item px-4">@Model.Data.EndDate.ToShortDateString()</li>
+            </ul>
+            <ul class="list-group list-group-light list-group-small flex-row">
+                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartPrice.ToString("####.##")</li>
+                <li class="list-group-item px-4">@Model.Data.BuyNowPrice.ToString("####.##")</li>
+            </ul>
 
+            <div class="d-flex flex-column text-center">
+                <form class="row gy-2 gx-3 align-items-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
+                    <div class="form-outline" style="width: 22rem;">
+                        <i class="fas fa-dollar-sign trailing"></i>
+                        <input min="0" type="number" id="bid_amt" name="bid_amt" class="form-control form-icon-trailing" />
+                        <label class="form-label" for="bid_amt">Enter the amount</label>
+                    </div>
+                    @* <input type="number" name="bid_amt" id="bid_amt"> *@
+                    <button type="submit" class="btn btn-primary">Place a bid</button>
+                </form>
+                <div class="d-grid gap-2 my-2">
+                    <button type="submit" class="btn btn-success mx-5">Buy now!</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <h2>@Model.Data.AuctionName</h2>
-        <div>
-            <p>Starting Price: $@Model.Data.StartPrice</p>
-            <p>Buy Now: $@Model.Data.BuyNowPrice</p>
-        </div>
-        <div>
-            <h3>Last Bid:</h3>
-        </div>
+
+    <div class="row g-0 w-100">
+        <h3 class="card-title mb-2">Bids</h3>
+    </div>
+    <div class="row g-0 w-100">
+        <ul class="list-group list-group-light">
+            @foreach (var bid in Model.Data.Bids)
+            {
+                <li class="list-group-item">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">@bid.UserUsername</div>
+                        <small>@bid.BidDate</small>
+                        <small>@bid.BidAmount</small>
+                    </div>
+                    @* <span class="badge badge-primary rounded-pill">14</span> *@
+                </li>
+            }
+            @* <li class="list-group-item disabled" aria-disabled="true">An disabled item</li>
+            <li class="list-group-item">A second item</li>
+            <li class="list-group-item">A third item</li>
+            <li class="list-group-item">A fourth item</li>
+            <li class="list-group-item">And a fifth one</li> *@
+        </ul>
     </div>
 </div>

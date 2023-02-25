@@ -60,6 +60,7 @@ namespace assignment1.Models.Auction
 
         // [Required] // Uncomment this if this is important.
         public byte[] Image { get => image; set => image = value; }
+        public string Base64Image => $"data:image;base64,{(image == null ? string.Empty : Convert.ToBase64String(image))}";
         [Required] 
         public string Condition { get => condition; set => condition = value; }
         public string Description { get => description; set => description = value; }

@@ -9,6 +9,7 @@ namespace assignment1.Models.Auction
         private int id;
         private int auction_id;
         private int user_id;
+        private string user_username;
         private DateTime bid_date;
         private double bid_amount;
 
@@ -25,12 +26,13 @@ namespace assignment1.Models.Auction
 
         public int Id { get => id; set => id = value; }
         [Required]
-        public int Auction_id { get => auction_id; set => auction_id = value; }
+        public int AuctionId { get => auction_id; set => auction_id = value; }
         [Required]
-        public int User_id { get => user_id; set => user_id = value; }
+        public int UserId { get => user_id; set => user_id = value; }
         [Required]
-        public DateTime Bid_date { get => bid_date; set => bid_date = value; }
+        public DateTime BidDate { get => bid_date; set => bid_date = value; }
         [Required]
-        public double Bid_amount { get => bid_amount; set => bid_amount = value; }
+        public double BidAmount { get => bid_amount; set => bid_amount = value; }
+        public string UserUsername { get => user_username; set => user_username = value; }
     }
 }
