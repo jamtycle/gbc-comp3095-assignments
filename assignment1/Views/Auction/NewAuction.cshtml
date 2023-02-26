@@ -27,7 +27,16 @@
 
         <div class="form-outline mb-4">
             <label class="form-label" for="description">Item Description</label>
-            <textarea asp-for="@Model.Data.Description" id="description" class="form-control">This is a test</textarea>
+            <textarea asp-for="@Model.Data.Description" id="description" class="form-control"></textarea>
+        </div>
+
+        <div class="form-select mb-4">
+            <label class="form-label" for="condition">Item Condition</label>
+            <select asp-for="@Model.Data.Condition" id="condition" class="form-control">
+                <option value="new">New</option>
+                <option value="used">Used</option>
+                <option value="not working">For parts</option>
+            </select>
         </div>
 
         <div class="form-outline mb-4">

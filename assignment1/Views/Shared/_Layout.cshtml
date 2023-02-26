@@ -56,47 +56,46 @@
             @RenderBody()
         </main>
     </div>
-</body>
+    <footer class="text-center text-sm-start border-top sticky-bottom bg-white mt-5">
+        <!-- Grid container -->
+        <div class="container">
+            <!--Grid row-->
+            <div class="row">
+                <!--Grid column-->
+                <div class="text-center">
+                    <h6 class="text-uppercase ">GROUP 69</h6>
 
-
-<footer class="text-center text-sm-start border-top mt-xl-5 pt-2 fixed-bottom">
-    <!-- Grid container -->
-    <div class="container">
-        <!--Grid row-->
-        <div class="row">
-            <!--Grid column-->
-            <div class="text-center">
-                <h6 class="text-uppercase ">GROUP 69</h6>
-
-                <ul class="list-unstyled mb-4">
-                    <li>
-                        Bruno Ramirez; 101380203; 48621
-                    </li>
-                    <li>
-                        Matthew Price 100723485	48620
-                    </li>
-                    <li>
-                        Evan William James 101351543 48620
-                    </li>
-                    <li>
-                        Ryan Lee 101296633 48623
-                    </li>
-                </ul>
+                    <ul class="list-unstyled mb-4">
+                        <li>
+                            Bruno Ramirez; 101380203; 48621
+                        </li>
+                        <li>
+                            Matthew Price 100723485	48620
+                        </li>
+                        <li>
+                            Evan William James 101351543 48620
+                        </li>
+                        <li>
+                            Ryan Lee 101296633 48623
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Copyright -->
-    <div class="text-center p-3 border-top border-white">
-        &copy; 2023 - assignment1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
-
-    </div>
+        <!-- Copyright -->
+        <div class="text-center border-top border-white">
+            &copy; 2023 - assignment1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
     @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
     <script src="~/mdb/js/mdb.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+
+
 
 
 </html>

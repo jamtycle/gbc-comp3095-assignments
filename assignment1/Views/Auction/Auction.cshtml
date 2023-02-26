@@ -10,33 +10,42 @@
             <img src="@Model.Data.Base64Image" class="rounded-4 img-fluid rounded-start w-100 h-100" style="object-fit: cover;" alt="@Model.Data.AuctionName" />
         </div>
         <div class="col-md-8">
-            <div class="d-flex flex-column text-center">
-                <h2 class="card-title mb-2">@Model.Data.AuctionName</h2>
+            <div class="d-flex flex-column text-center mb-3">
+                <h2 class="card-title mb-4">@Model.Data.AuctionName</h2>
                 <p class="card-text mb-2">@Model.Data.Description</p>
             </div>
             <ul class="list-group list-group-light list-group-small flex-row">
-                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartDate.ToString("yyyy/dd/MM HH:mm:ss")</li>
-                <li class="list-group-item px-4">@Model.Data.EndDate.ToString("yyyy/dd/MM HH:mm:ss")</li>
+                @*TODO: add ends in timer*@
+                <li class="list-group-item px-4" style="border:none;">Ends at:</li>
+                <li class="list-group-item px-4">@Model.Data.EndDate.ToString("HH:mm:ss dd/MM/yyyy ")</li>
             </ul>
+            <br>
             <ul class="list-group list-group-light list-group-small flex-row">
-                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartPrice.ToString("C3")</li>
-                <li class="list-group-item px-4">@Model.Data.BuyNowPrice.ToString("C3")</li>
+                <li class="list-group-item px-4" style="border:none;">Leading Bid</li>
+                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartPrice.ToString("C2")</li>
+                @*TODO:*@
+            </ul>
+            <div class="d-flex justify-content-start mt-2">
+                <label class="list-group-item px-4 me-2" style="border:none;">Buy it now</label>
+                <span class="d-inline-block" tabindex="0" data-mdb-toggle="tooltip" title="Coming Soon">
+                    <button type="button" class="btn btn-primary" disabled>@Model.Data.BuyNowPrice.ToString("C2")</button>
+                </span>
+            </div>
+            <ul class="list-group list-group-light list-group-small flex-row">
             </ul>
         </div>
         <div class="d-flex flex-column text-center mt-4">
-                <form class="row gy-2 gx-3 align-items-center justify-content-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
-                    <div class="form-outline w-75" >
-                        <i class="fas fa-dollar-sign trailing"></i>
-                        <input min="@Model.Data.StartPrice" type="number" id="bid_amt" name="bid_amt" class="form-control form-icon-trailing" />
-                        <label class="form-label" for="bid_amt">Enter the amount</label>
-                    </div>
-                    @* <input type="number" name="bid_amt" id="bid_amt"> *@
-                    <button type="submit" class="btn btn-primary w-75">Place a bid</button>
-                </form>
-                <!--<div class="d-grid gap-2 my-2">
-                    <button type="submit" class="btn btn-success mx-5">Buy now!</button>
-                </div>-->
-            </div>
+            <form class="row gy-2 gx-3 align-items-center justify-content-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
+                <div class="form-outline w-75" >
+                    <i class="fas fa-dollar-sign trailing"></i>
+                    <input min="@Model.Data.StartPrice" type="number" id="bid_amt" name="bid_amt" class="form-control form-icon-trailing" />
+                    <label class="form-label" for="bid_amt">Bid functionality to come in future release</label>
+                </div>
+                <span class="d-inline-block" tabindex="0" data-mdb-toggle="tooltip" title="Coming Soon">
+                    <button type="submit" class="btn btn-primary w-75" disabled>Place a bid</button>
+                </span>
+            </form>
+        </div>
     </div>
     <!-- FOR FUTURE DEVELOPMENT -->
 

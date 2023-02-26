@@ -19,13 +19,18 @@
 
 <br>
 <br>
+@if (Model.Data.Search == null)
+{
+    <h3>There are no items that meet your search criteria</h3>
+
+}
 
 <ul class="list-group list-group-light row">
     @foreach (var auction in @Model?.Data?.Search)
     {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li class="list-group-item d-flex justify-content-between justify-content-center">
             <div class="card" style="width: 15rem;">
-                <img src="@auction.Base64Image" alt="@auction.AuctionName" class="card-img-top" />
+                <img src="@auction.Base64Image" alt="@auction.AuctionName" class="card-img-left" />
                 <div class="ms-3 card-body">
                     <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage"
                     asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
