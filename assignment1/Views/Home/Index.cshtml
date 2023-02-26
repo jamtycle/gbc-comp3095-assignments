@@ -4,7 +4,7 @@
     ViewData["Title"] = "Assignment1 - Home";
 }
 
-<div id="carouselExampleCaptions" class="carousel slide" data-mdb-ride="carousel">
+@*<div id="carouselExampleCaptions" class="carousel slide" data-mdb-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-mdb-target="#carouselExampleCaptions" data-mdb-slide-to="0" class="active"
             aria-current="true" aria-label="Slide 1"></button>
@@ -17,7 +17,7 @@
         @foreach (var auction in @Model?.Data?.Carousel)
         {
             <div class="carousel-item">
-                <img src="" class="d-block w-100" height="300px" alt="Wild Landscape" />
+                <img src="" class="d-block w-100" height="300" alt="Wild Landscape" />
                 <div class="carousel-caption d-none d-md-block">
                     <a class="fw-bold mb-1" asp-controller="Auction" asp-action="AuctionPage"
                     asp-route-aid="@auction.AuctionId"><strong>@auction.AuctionName</strong></a>
@@ -37,7 +37,12 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
-</div>
+</div>*@
+@if (Model.User != null)
+{
+    <h3>Welcome @Model.User.Username </h3>
+}
+
 <br>
 <br>
 
@@ -52,24 +57,64 @@
         </button>
     </div>
 </form>
+<hr>
+<h3 class="row justify-content-center">Top Auction Items</h3>
+<br>
+<br>
 
-<br>
-<br>
-<ul class="list-group list-group-light">
-    @foreach (var auction in @Model?.Data?.AuctionList)
+@*@{
+    var search_array = @Model.Data.AuctionList.ToArray();
+}
+@for (var i = 0; i< search_array.Length; i++)
+{
+    if (i % 4 == 0)
     {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <img src="@auction.Base64Image" alt="@auction.AuctionName" style="width: 45px; height: 45px" class="rounded-circle" />
-                <div class="ms-3">
-                    <a class="fw-bold mb-1" asp-controller="Auction" asp-action="AuctionPage"
-                    asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
-                    @* <p class="fw-bold mb-1">@auction.AuctionName</p> *@
-                    <p class="text-muted mb-0">Start Price: @auction.StartPrice - Buy Now: @auction.BuyNowPrice</p>
-                    <p class="text-muted mb-0">End Date: @auction.EndDate.Date.ToShortDateString()</p>
+        <div class="card-deck d-flex justify-content-between">
+            <div class="card m-1 " style="width: 15rem;">
+                <img src="@search_array[i].Base64Image" alt="@search_array[i].AuctionName" class="card-img-top" style="height:15vh;" />
+                <div class="ms-3 card-body">
+                    <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage" asp-route-aid="@search_array[i].AuctionId">@search_array[i].AuctionName</a>
+                    <p class="text-muted mb-0 card-text">Start Price: @search_array[i].StartPrice.ToString("C2")</p>
+                    <p class="text-muted mb-0 card-text">Buy Now: @search_array[i].BuyNowPrice.ToString("C2")</p>
+                    <p class="text-muted mb-0 card-text">End Date: @search_array[i].EndDate.Date.ToString("dd/MM/yyyy")</p>
+                    <p class="text-muted mb-0 card-text">End Time: @search_array[i].EndDate.Date.ToString("HH:mm:ss")</p>
+                    <span class="badge rounded-pill badge-success card-footer">Active</span>
                 </div>
             </div>
-            <span class="badge rounded-pill badge-success">Active</span>
-        </li>
+        </div>
     }
-</ul>
+    else
+    {
+        <div class="card m-1 " style="width: 15rem;">
+                <img src="@search_array[i].Base64Image" alt="@search_array[i].AuctionName" class="card-img-top" style="height:15vh;" />
+                <div class="ms-3 card-body">
+                    <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage" asp-route-aid="@search_array[i].AuctionId">@search_array[i].AuctionName</a>
+                    <p class="text-muted mb-0 card-text">Start Price: @search_array[i].StartPrice.ToString("C2")</p>
+                    <p class="text-muted mb-0 card-text">Buy Now: @search_array[i].BuyNowPrice.ToString("C2")</p>
+                    <p class="text-muted mb-0 card-text">End Date: @search_array[i].EndDate.Date.ToString("dd/MM/yyyy")</p>
+                    <p class="text-muted mb-0 card-text">End Time: @search_array[i].EndDate.Date.ToString("HH:mm:ss")</p>
+                    <span class="badge rounded-pill badge-success card-footer">Active</span>
+                </div>
+        </div>
+    }
+}*@
+
+@for (var i = 0; i < @Model.Data?.AuctionList.Count(); i += 4)
+{
+    <div class="card-deck d-flex justify-content-between mb-3">
+        @foreach (var auction in @Model.Data.AuctionList.Skip(i).Take(4))
+        {
+            <div class="card m-1 " style="width: 15rem;">
+                <img src="@auction.Base64Image" alt="@auction.AuctionName" class="card-img-top" style="height:15vh;" />
+                <div class="ms-3 card-body">
+                    <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage" asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
+                    <p class="text-muted mb-0 card-text">Start Price: @auction.StartPrice.ToString("C2")</p>
+                    <p class="text-muted mb-0 card-text">Buy Now: @auction.BuyNowPrice.ToString("C2")</p>
+                    <p class="text-muted mb-0 card-text">End Date: @auction.EndDate.Date.ToString("dd/MM/yyyy")</p>
+                    <p class="text-muted mb-0 card-text">End Time: @auction.EndDate.Date.ToString("HH:mm:ss")</p>
+                    <span class="badge rounded-pill badge-success card-footer">Active</span>
+                </div>
+            </div>
+        }
+    </div>
+}

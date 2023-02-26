@@ -32,7 +32,7 @@ namespace assignment1.Controllers
                 });
 
             // Logged in and same user
-            if (user.Id.Equals(other.Id)) return View("UserOwner", new LayoutModel<UserBase>()
+            if (user.Id.Equals(other.Id)) return View("UserProfile", new LayoutModel<UserBase>()
             {
                 User = user,
                 Menus = this.GetMenus(user),
