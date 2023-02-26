@@ -5,7 +5,7 @@
 }
 
 <div class="card mb-3 w-100">
-    <div class="row g-0 w-100">
+    <div class="row g-0 w-80">
         <div class="col-md-4">
             <img src="@Model.Data.Base64Image" class="rounded-4 img-fluid rounded-start w-100 h-100" style="object-fit: cover;" alt="@Model.Data.AuctionName" />
         </div>
@@ -15,37 +15,37 @@
                 <p class="card-text mb-2">@Model.Data.Description</p>
             </div>
             <ul class="list-group list-group-light list-group-small flex-row">
-                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartDate.ToShortDateString()</li>
-                <li class="list-group-item px-4">@Model.Data.EndDate.ToShortDateString()</li>
+                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartDate.ToString("yyyy/dd/MM HH:mm:ss")</li>
+                <li class="list-group-item px-4">@Model.Data.EndDate.ToString("yyyy/dd/MM HH:mm:ss")</li>
             </ul>
             <ul class="list-group list-group-light list-group-small flex-row">
-                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartPrice.ToString("####.##")</li>
-                <li class="list-group-item px-4">@Model.Data.BuyNowPrice.ToString("####.##")</li>
+                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartPrice.ToString("C3")</li>
+                <li class="list-group-item px-4">@Model.Data.BuyNowPrice.ToString("C3")</li>
             </ul>
-
-            <div class="d-flex flex-column text-center">
-                <form class="row gy-2 gx-3 align-items-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
-                    <div class="form-outline" style="width: 22rem;">
+        </div>
+        <div class="d-flex flex-column text-center mt-4">
+                <form class="row gy-2 gx-3 align-items-center justify-content-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
+                    <div class="form-outline w-75" >
                         <i class="fas fa-dollar-sign trailing"></i>
-                        <input min="0" type="number" id="bid_amt" name="bid_amt" class="form-control form-icon-trailing" />
+                        <input min="@Model.Data.StartPrice" type="number" id="bid_amt" name="bid_amt" class="form-control form-icon-trailing" />
                         <label class="form-label" for="bid_amt">Enter the amount</label>
                     </div>
                     @* <input type="number" name="bid_amt" id="bid_amt"> *@
-                    <button type="submit" class="btn btn-primary">Place a bid</button>
+                    <button type="submit" class="btn btn-primary w-75">Place a bid</button>
                 </form>
-                <div class="d-grid gap-2 my-2">
+                <!--<div class="d-grid gap-2 my-2">
                     <button type="submit" class="btn btn-success mx-5">Buy now!</button>
-                </div>
+                </div>-->
             </div>
-        </div>
     </div>
+    <!-- FOR FUTURE DEVELOPMENT -->
 
-    <div class="row g-0 w-100">
+    <!--<div class="row g-0 w-100">
         <h3 class="card-title mb-2">Bids</h3>
     </div>
     <div class="row g-0 w-100">
         <ul class="list-group list-group-light">
-            @foreach (var bid in Model.Data.Bids)
+            @*@foreach (var bid in Model.Data.Bids)
             {
                 <li class="list-group-item">
                     <div class="ms-2 me-auto">
@@ -62,5 +62,5 @@
             <li class="list-group-item">A fourth item</li>
             <li class="list-group-item">And a fifth one</li> *@
         </ul>
-    </div>
+    </div>-->
 </div>

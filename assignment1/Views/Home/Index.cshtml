@@ -52,24 +52,23 @@
         </button>
     </div>
 </form>
-
+<hr>
+<h3 class="row justify-content-center">Top Auction Items</h3>
 <br>
 <br>
-<ul class="list-group list-group-light">
+<div class="card-deck d-flex justify-content-between">
     @foreach (var auction in @Model?.Data?.AuctionList)
     {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <img src="@auction.Base64Image" alt="@auction.AuctionName" style="width: 45px; height: 45px" class="rounded-circle" />
-                <div class="ms-3">
-                    <a class="fw-bold mb-1" asp-controller="Auction" asp-action="AuctionPage"
-                    asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
-                    @* <p class="fw-bold mb-1">@auction.AuctionName</p> *@
-                    <p class="text-muted mb-0">Start Price: @auction.StartPrice - Buy Now: @auction.BuyNowPrice</p>
-                    <p class="text-muted mb-0">End Date: @auction.EndDate.Date.ToShortDateString()</p>
-                </div>
+        <div class="card" style="width: 15rem;">
+            <img src="@auction.Base64Image" alt="@auction.AuctionName" class="card-img-top" />
+            <div class="ms-3 card-body">
+                <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage"
+                asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
+                <p class="text-muted mb-0 card-text">Start Price: @auction.StartPrice.ToString("C3")</p>
+                <p class="text-muted mb-0 card-text">Buy Now: @auction.BuyNowPrice.ToString("C3")</p>
+                <p class="text-muted mb-0 card-footer">End Date: @auction.EndDate.Date.ToString("dd/MM/yyyy @ HH:mm:ss")</p>
+                <span class="badge rounded-pill badge-success card-footer">Active</span>
             </div>
-            <span class="badge rounded-pill badge-success">Active</span>
-        </li>
+        </div>
     }
-</ul>
+</div>
