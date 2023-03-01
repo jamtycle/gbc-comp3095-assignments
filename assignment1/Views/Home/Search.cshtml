@@ -19,27 +19,40 @@
 
 <br>
 <br>
+
 @if (Model.Data.Search == null)
 {
     <h3>There are no items that meet your search criteria</h3>
+}
+else
+{
+
+    var search_array = Model.Data.Search.ToArray();
+
+    @for (var i = 0; i < search_array.Length; i += 4)
+    {
+        <div class="card-deck d-flex justify-content-evenly mb-3">
+    @for (var k = i; k < i + 4 && k < search_array.Length; k++)
+            {
+                var auction = search_array[k];
+                <div class="card m-1" style="width: 15rem;">
+                    <a class="ripple" asp-controller="Auction" asp-action="AuctionPage" asp-route-aid="@auction.AuctionId">
+                        <img src="/Images/AuctionImage?id=@auction.AuctionId" alt="@auction.AuctionName" class="card-img-top"
+                            style="height:15vh;" />
+                    </a>
+                    <div class="ms-3 card-body">
+                        <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage"
+                asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
+
+                        <p class="text-muted mb-0 card-text">Start Price: @auction.StartPrice.ToString("C2")</p>
+                        <p class="text-muted mb-0 card-text">Buy Now: @auction.BuyNowPrice.ToString("C2")</p>
+                        <p class="text-muted mb-0 card-text">End Date: @auction.EndDate.Date.ToString("dd/MM/yyyy")</p>
+                        <p class="text-muted mb-0 card-text">End Time: @auction.EndDate.Date.ToString("HH:mm:ss")</p>
+                        <span class="badge rounded-pill badge-success card-footer">Active</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 
 }
-
-<ul class="list-group list-group-light row">
-    @foreach (var auction in @Model?.Data?.Search)
-    {
-        <li class="list-group-item d-flex justify-content-between justify-content-center">
-            <div class="card" style="width: 15rem;">
-                <img src="@auction.Base64Image" alt="@auction.AuctionName" class="card-img-left" />
-                <div class="ms-3 card-body">
-                    <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage"
-                    asp-route-aid="@auction.AuctionId">@auction.AuctionName</a>
-                    <p class="text-muted mb-0 card-text">Start Price: @auction.StartPrice.ToString("C3")</p>
-                    <p class="text-muted mb-0 card-text">Buy Now: @auction.BuyNowPrice.ToString("C3")</p>
-                    <p class="text-muted mb-0 card-footer">End Date: @auction.EndDate.Date.ToString("dd/MM/yyyy @ HH:mm:ss")</p>
-                    <span class="badge rounded-pill badge-success card-footer">Active</span>
-                </div>
-            </div>
-        </li>
-    }
-</ul>

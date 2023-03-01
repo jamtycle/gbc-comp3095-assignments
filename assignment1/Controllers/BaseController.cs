@@ -23,6 +23,13 @@ namespace assignment1.Controllers
             return new Auth(session).User;
         }
 
+        protected virtual void RemoveUserSession()
+        {
+            string session = Request.Cookies[Persistent.UserSession_Cookie] ?? string.Empty;
+            if (!Utilities.ValidString(session)) return;
+            Response.Cookies.Append(Persistent.UserSession_Cookie, "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1), Path = "/" });
+        }
+
         protected virtual IEnumerable<MenuModel> GetMenus(UserBase _user)
         {
             int user_type_id = -1;

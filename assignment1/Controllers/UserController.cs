@@ -1,4 +1,3 @@
-using System;
 using assignment1.Data;
 using assignment1.Models;
 using assignment1.Models.Generics;
@@ -63,7 +62,7 @@ namespace assignment1.Controllers
                 ViewBag.MakeUserSeller_Error = "There was an error when trying to update the user 😔";
             }
 
-            return View("UserOwner", new LayoutModel<UserBase>()
+            return View("UserProfile", new LayoutModel<UserBase>()
             {
                 User = user,
                 Menus = this.GetMenus(user),

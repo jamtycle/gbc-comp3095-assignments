@@ -11,6 +11,16 @@ namespace assignment1.Libs
 
         public static readonly IEnumerable<dynamic> user_type_table = new DBConnector().GetUserTypes();
 
+        public static dynamic InfoModel(string _title, string _message, string _button_text, string _action, string _page_title = "Information", string _controller = "") => new
+        {
+            PageTitle = _page_title,
+            Title = _title,
+            Message = _message,
+            ButtonText = _button_text,
+            Controller = _controller,
+            Action = _action
+        };
+
         #region Email
         public static string VerificationEmail
         {

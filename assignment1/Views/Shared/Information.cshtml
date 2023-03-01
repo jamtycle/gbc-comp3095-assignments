@@ -1,11 +1,19 @@
 @{
-    ViewData["Title"] = ViewBag.PageTitle;
+    ViewData["Title"] = ViewBag.Info.PageTitle;
 }
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">@ViewBag.Title</h5>
-        <p class="card-text">@ViewBag.Message</p>
-        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">@ViewBag.ButtonText</a>
+        <h5 class="card-title">@ViewBag.Info.Title</h5>
+        <p class="card-text">@ViewBag.Info.Message</p>
+        <a class="btn btn-primary" asp-controller="@ViewBag.Info.Controller" asp-action="@ViewBag.Info.Action">@ViewBag.Info.ButtonText</a>
     </div>
 </div>
+
+@* 
+PageTitle;
+Title;
+Message;
+ButtonText;
+Controller;
+Action; *@

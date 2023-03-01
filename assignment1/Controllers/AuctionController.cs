@@ -18,6 +18,9 @@ namespace assignment1.Controllers
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
 
             UserBase user = this.RecoverUserSession();
+            if (user == null) return Forbid();
+            else if (user.UserTypeId != Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Seller")).UserTypeId) return Forbid();
+
             return View(new LayoutModel<AuctionModel>()
             {
                 User = user,
@@ -66,11 +69,13 @@ namespace assignment1.Controllers
         {
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
 
-            /*_auction.Data.Image = Request.Form.Files.FirstOrDefault().CopyTo();*/
+            UserBase user = this.RecoverUserSession();
+            if (user == null) return Forbid();
+            else if (user.UserTypeId != Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Seller")).UserTypeId) return Forbid();
+
             if (!ModelState.IsValid) return View(_auction);
 
             _auction.Data.Image = GetImageFromRequest("auction_pic");
-            UserBase user = this.RecoverUserSession();
 
             LayoutModel<AuctionModel> model = new()
             {

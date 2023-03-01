@@ -98,7 +98,7 @@ CREATE TYPE [dbo].[AuctionType] AS TABLE(
 )
 GO
 
-ALTER PROCEDURE [dbo].[brb_CRUD_auction]
+CREATE PROCEDURE [dbo].[brb_CRUD_auction]
 (
     @type TINYINT,
     @table AuctionType READONLY 
@@ -113,7 +113,7 @@ BEGIN
 
         INSERT INTO auction(user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image])
         OUTPUT inserted.auction_id INTO @output
-        SELECT user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image] FROM @table
+        SELECT TOP 1 user_id, auction_name, start_price, buy_now_price, [start_date], end_date, condition, [description], [image] FROM @table
 
         SELECT * FROM @output;
         -- comission, tax, discount_percentage
@@ -291,7 +291,7 @@ BEGIN
 END
 
 GO 
-ALTER PROCEDURE [dbo].[brb_get_last_auctions]
+CREATE PROCEDURE [dbo].[brb_get_last_auctions]
 (
     @option TINYINT
 )
@@ -304,7 +304,7 @@ BEGIN
         SELECT  a.auction_id, COUNT(*) AS bids
             INTO #total_bids
         FROM    auction a LEFT JOIN bid b ON a.auction_id = b.auction_id
-        WHERE   end_date > CAST(GETDATE() AS DATE)
+        WHERE   end_date >= CAST(GETDATE() AS DATE)
         GROUP BY a.auction_id;
 
         SELECT TOP 50 * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids)
@@ -313,18 +313,18 @@ BEGIN
     ELSE IF (@option = 1)
     BEGIN
 
-        SELECT TOP 50 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 50 * FROM auction WHERE end_date >= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
     ELSE IF (@option = 2)
     BEGIN
 
-        SELECT TOP 100 * FROM auction WHERE end_date > CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 100 * FROM auction WHERE end_date >= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
     ELSE IF (@option = 3)
     BEGIN
-        SELECT TOP 50 * FROM auction WHERE end_date < CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT TOP 50 * FROM auction WHERE end_date <= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
     END
 
 END
@@ -340,7 +340,7 @@ BEGIN
     SELECT  * 
     FROM    auction 
     WHERE   auction_name LIKE CONCAT('%', @search, '%') 
-            AND end_date > CAST(GETDATE() AS DATE)
+            AND end_date >= CAST(GETDATE() AS DATE)
     ORDER BY [start_price] 
 
 END
@@ -355,8 +355,21 @@ CREATE PROCEDURE [dbo].[brb_get_auction]
 AS
 BEGIN
 
-    SELECT * FROM auction WHERE auction_id = @auction_id;
+    -- TODO: Remove [image] from the SELECT statement.
+    SELECT auction_id, user_id, auction_name, start_price, buy_now_price, start_date, end_date, comission, tax, discount_percentage, condition, [description], [image] FROM auction WHERE auction_id = @auction_id;
     SELECT * FROM bid WHERE auction_id = @auction_id;
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_get_auction_image]
+(
+    @auction_id INT
+)
+AS
+BEGIN
+
+    SELECT [image] FROM auction WHERE auction_id = @auction_id
 
 END
 
