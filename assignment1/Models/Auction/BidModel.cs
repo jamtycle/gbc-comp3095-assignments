@@ -4,7 +4,7 @@ using assignment1.Models.Generics;
 
 namespace assignment1.Models.Auction
 {
-    public class BidModel : ModelBase
+    public class BidModel : ModelBase, IComparable<BidModel>
     {
         private int id;
         private int auction_id;
@@ -22,6 +22,11 @@ namespace assignment1.Models.Auction
         {
             foreach (DataRow row in _bids.Rows)
                 yield return new BidModel(row);
+        }
+
+        public int CompareTo(BidModel other)
+        {
+            return this.bid_amount.CompareTo(other.bid_amount);
         }
 
         public int Id { get => id; set => id = value; }

@@ -4,72 +4,82 @@
     ViewData["Title"] = "Auction Page";
 }
 
-<div class="card mb-3 w-100">
-    <div class="row g-0 w-80">
-        <div class="col-md-4">
-            <img src="@Model.Data.Base64Image" class="rounded-4 img-fluid rounded-start w-100 h-100" style="object-fit: cover;" alt="@Model.Data.AuctionName" />
+<div class="card mb-3 my-4 w-75 m-auto">
+    <div class="row g-0 w-100 m-auto">
+        <div class="col-md-4 p-4 hover-zoom">
+            <img src="/Images/AuctionImage?id=@Model.Data.AuctionId"
+                class="rounded-6 img-fluid w-100 h-100" style="object-fit: contain;"
+                alt="@Model.Data.AuctionName" />
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8 py-4">
             <div class="d-flex flex-column text-center mb-3">
-                <h2 class="card-title mb-4">@Model.Data.AuctionName</h2>
+                <h2 class="card-title mb-1">@Model.Data.AuctionName</h2>
                 <p class="card-text mb-2">@Model.Data.Description</p>
             </div>
-            <ul class="list-group list-group-light list-group-small flex-row">
+
+            <div class="row justify-content-center">
                 @*TODO: add ends in timer*@
-                <li class="list-group-item px-4" style="border:none;">Ends at:</li>
-                <li class="list-group-item px-4">@Model.Data.EndDate.ToString("HH:mm:ss dd/MM/yyyy ")</li>
-            </ul>
-            <br>
-            <ul class="list-group list-group-light list-group-small flex-row">
-                <li class="list-group-item px-4" style="border:none;">Leading Bid</li>
-                <li class="list-group-item px-4" style="border: none;">@Model.Data.StartPrice.ToString("C2")</li>
-                @*TODO:*@
-            </ul>
-            <div class="d-flex justify-content-start mt-2">
-                <label class="list-group-item px-4 me-2" style="border:none;">Buy it now</label>
-                <span class="d-inline-block" tabindex="0" data-mdb-toggle="tooltip" title="Coming Soon">
-                    <button type="button" class="btn btn-primary" disabled>@Model.Data.BuyNowPrice.ToString("C2")</button>
-                </span>
+                <h5 class="col-md-4 text-end">Ends at:</h5>
+                <p class="col-md-5">@Model.Data.EndDate.ToString("dd/MM/yyyy HH:mm:ss")</p>
             </div>
-            <ul class="list-group list-group-light list-group-small flex-row">
-            </ul>
-        </div>
-        <div class="d-flex flex-column text-center mt-4">
-            <form class="row gy-2 gx-3 align-items-center justify-content-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
-                <div class="form-outline w-75" >
-                    <i class="fas fa-dollar-sign trailing"></i>
-                    <input min="@Model.Data.StartPrice" type="number" id="bid_amt" name="bid_amt" class="form-control form-icon-trailing" />
-                    <label class="form-label" for="bid_amt">Bid functionality to come in future release</label>
-                </div>
-                <span class="d-inline-block" tabindex="0" data-mdb-toggle="tooltip" title="Coming Soon">
-                    <button type="submit" class="btn btn-primary w-75" disabled>Place a bid</button>
-                </span>
-            </form>
+
+            <div class="row justify-content-center">
+                <h5 class="col-md-4 text-end">Leading Bid:</h5>
+                <p class=col-md-5>@(@Model.Data.LastBid != null ? @Model.Data.LastBid.BidAmount.ToString("C2") : "This Auction have no bids yet")</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <h5 class="col-md-4 col-sm-1 text-end my-auto">Buy it now:</h5>
+                <form asp-action="BuyNowAuction" method="post" class="col-md-5 col-sm-2">
+                    @if(Model.User != null) {
+                        <input type="hidden" asp-for="User.Id" name="user_id">
+                        <input type="hidden" asp-for="Data.AuctionId" name="auction_id">
+                        <input type="hidden" asp-for="Data.BuyNowPrice" name="but_now_price">
+                    }
+                    <span class="d-inline-block" tabindex="0" data-mdb-toggle="tooltip" title="@(Model.User == null ? "Log in to buy!" : "")">
+                        <button type="submit" class="btn btn-secondary btn-rounded fs-6" @(Model.User == null ? "disabled" : "")>@Model.Data.BuyNowPrice.ToString("C2")</button>
+                    </span>
+                </form>
+            </div>
+
+            <div class="text-center mt-4">
+                <form class="row justify-content-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
+                    <div class="form-outline w-25 col-md-4 fs-6">
+                        <i class="fas fa-dollar-sign trailing"></i>
+                        <input class="form-control form-icon-trailing fs-5 active" min="@Model.Data.BidStart" type="number" id="bid_amt" name="bid_amt" value="@Model.Data.BidStart"/>
+                        <label class="form-label" for="bid_amt">Bid amount</label>
+                    </div>
+                    <span class="col-md-4" tabindex="0" data-mdb-toggle="tooltip" title="@(Model.User == null ? "Log in to buy!" : "")">
+                        <button type="submit" class="btn btn-primary fs-6 w-100" @(Model.User == null ? "disabled" : "")>Place a bid</button>
+                    </span>
+                </form>
+            </div>
+
         </div>
     </div>
     <!-- FOR FUTURE DEVELOPMENT -->
 
-    <!--<div class="row g-0 w-100">
-        <h3 class="card-title mb-2">Bids</h3>
-    </div>
-    <div class="row g-0 w-100">
-        <ul class="list-group list-group-light">
-            @*@foreach (var bid in Model.Data.Bids)
-            {
-                <li class="list-group-item">
+    @if (Model.Data.Bids != null && Model.Data.Bids.Count() > 0)
+    {
+        <div class="row w-100 text-center mt-4">
+            <h3 class="card-title mb-2">Bids</h3>
+        </div>
+
+        <div class="row g-0 w-100">
+            <ul class="list-group list-group-light">
+                @foreach (var bid in Model.Data.Bids)
+                {
+                    <li class="list-group-item">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">@bid.UserUsername</div>
                         <small>@bid.BidDate</small>
                         <small>@bid.BidAmount</small>
                     </div>
-                    @* <span class="badge badge-primary rounded-pill">14</span> *@
+                    <span class="badge badge-primary rounded-pill">14</span>
                 </li>
-            }
-            @* <li class="list-group-item disabled" aria-disabled="true">An disabled item</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-            <li class="list-group-item">A fourth item</li>
-            <li class="list-group-item">And a fifth one</li> *@
-        </ul>
-    </div>-->
+                }
+            </ul>
+        </div>
+    }
+
 </div>

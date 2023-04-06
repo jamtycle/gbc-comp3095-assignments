@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Assignment1 - Home";
 }
+
 @* 
 <div id="carouselExampleCaptions" class="carousel slide" data-mdb-ride="carousel">
     <div class="carousel-indicators">
@@ -41,7 +42,7 @@
 
 @if (Model.User != null)
 {
-    <h3>Welcome @Model.User.Username </h3>
+    <h3 class="row justify-content-center">Welcome @Model.User.Username</h3>
 }
 
 <br>

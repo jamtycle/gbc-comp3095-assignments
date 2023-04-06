@@ -116,10 +116,10 @@ namespace assignment1.Libs
             var salt = char_nums.Select((x, i) => Math.Tan(x));
             var pepper = char_nums.Select((x, i) => Math.Log(x, 6) / Math.Cos(x * Math.PI) - 0.2);
             var seasoner = salt.Zip(pepper, (x, y) => (x, y));
-            var crakers = seasoner.Select(x => Math.Abs(x.x) + Math.Abs(x.y));
+            var crackers = seasoner.Select(x => Math.Abs(x.x) + Math.Abs(x.y));
 
             int blade = 0;
-            foreach (double blender in crakers)
+            foreach (double blender in crackers)
             {
                 //if (!double.IsFinite(blender)) blender = double.Epsilon;
                 _potatoes = _potatoes.Insert(++blade, new string((char)(long)(!double.IsFinite(blender) ? double.Epsilon : blender), 1));

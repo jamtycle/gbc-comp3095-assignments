@@ -52,6 +52,12 @@ namespace assignment1.Data
             return new AuctionModel(info.Tables[0].Rows[0], info.Tables[1]);
         }
 
+        public byte[] GetAuctionPic(int _auction_id)
+        {
+            DataTable info = this.GetSQLData("[brb_get_auction_image]", new Hashtable { { "@auction_id", _auction_id } });
+            return info.Rows.Count == 0 ? Array.Empty<byte>() : (byte[])(info.Rows[0]["image"] is DBNull ? Array.Empty<byte>() : info.Rows[0]["image"]);
+        }
+
         public enum LandingPageAuctionsOptions : byte { Carrousel, Last50, Last100 }
         public IEnumerable<AuctionModel> GetLastAuctions(LandingPageAuctionsOptions _option)
         {
@@ -149,6 +155,12 @@ namespace assignment1.Data
             DataTable info = this.GetSQLData("[brb_get_user]", new Hashtable() { { "@user_id", _id } });
             if (info.Rows.Count == 0) return null;
             return new LoginModel(info.Rows[0]);
+        }
+
+        public byte[] GetUserPic(int _id)
+        {
+            DataTable info = this.GetSQLData("[brb_get_user_pic]", new Hashtable() { { "@user_id", _id } });
+            return info.Rows.Count == 0 ? Array.Empty<byte>() : (byte[])(info.Rows[0]["profile_pic"] is DBNull ? Array.Empty<byte>() : info.Rows[0]["profile_pic"]);
         }
     }
 }

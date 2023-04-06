@@ -1,4 +1,5 @@
 using System.Data;
+using static assignment1.Libs.Persistent;
 
 namespace assignment1.Models.Generics
 {
@@ -36,5 +37,7 @@ namespace assignment1.Models.Generics
         public virtual byte[] ProfilePic { get => profile_pic; set => profile_pic = value; }
         public virtual DateTime DateOfBirth { get => date_of_birth; set => date_of_birth = value; }
         public virtual string ValidationKey { get => validation_key; set => validation_key = value; }
+
+        public string UserType => user_type_table.FirstOrDefault(x => x.UserTypeId.Equals(this.user_type_id))?.UserTypeName ?? string.Empty;
     }
 }

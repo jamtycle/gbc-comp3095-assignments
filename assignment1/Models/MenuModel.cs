@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 using assignment1.Data;
 using assignment1.Models.Generics;
@@ -12,7 +13,7 @@ namespace assignment1.Models
         private string action;
         private string controller;
         private string area;
-        private string classes;
+        private readonly string classes;
 
         public MenuModel(DataRow _row) : base(_row) { }
 
@@ -21,6 +22,6 @@ namespace assignment1.Models
         public string Action { get => action; set => action = value; }
         public string Controller { get => controller; set => controller = value; }
         public string Area { get => area; set => area = value; }
-        public string Classes { get => classes; set => classes = value; }
+        public Hashtable Classes { get => new (classes.Split("|").Select(x => x.Split(":")).ToDictionary(k => k[0], v => v[1])); }
     }
 }

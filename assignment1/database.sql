@@ -307,7 +307,7 @@ BEGIN
         WHERE   end_date >= CAST(GETDATE() AS DATE)
         GROUP BY a.auction_id;
 
-        SELECT TOP 50 * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids)
+        SELECT TOP 50 * FROM auction WHERE auction_id IN (SELECT TOP 3 auction_id FROM #total_bids WHERE [image] IS NOT NULL)
 
     END
     ELSE IF (@option = 1)
@@ -382,9 +382,23 @@ CREATE PROCEDURE [dbo].[brb_get_user]
 AS
 BEGIN
 
-    SELECT user_id, user_type_id, username, [session], date_of_birth, first_name, last_name, email, profile_pic
-    FROM [user] 
-    WHERE user_id = @user_id;
+    SELECT  user_id, user_type_id, username, [session], date_of_birth, first_name, last_name, email, profile_pic
+    FROM    [user] 
+    WHERE   user_id = @user_id;
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_get_user_pic]
+(
+    @user_id INT
+)
+AS
+BEGIN
+
+    SELECT  profile_pic
+    FROM    [user] 
+    WHERE   user_id = @user_id;
 
 END
 

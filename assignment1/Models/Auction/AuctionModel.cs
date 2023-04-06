@@ -64,5 +64,16 @@ namespace assignment1.Models.Auction
         [Required] 
         public string Condition { get => condition; set => condition = value; }
         public string Description { get => description; set => description = value; }
+
+        public double BidStart
+        {
+            get 
+            {
+                var mbid = bids.Max();
+                return mbid == null ? StartPrice : mbid.BidAmount + 0.1;
+            }
+        }
+
+        public BidModel LastBid { get => bids.Max(); }
     }
 }

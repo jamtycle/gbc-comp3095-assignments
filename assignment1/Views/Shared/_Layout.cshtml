@@ -26,26 +26,31 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav d-flex flex-grow-1">
-
                         @if (Model != null)
                         {
                             @foreach (assignment1.Models.MenuModel menu in Model.Menus)
                             {
-                                @if (menu.Label == "Log out")
-                                {
-                                    <li class="nav-item ms-auto text-bg-light rounded">
-                                        <a class="nav-link text-black" asp-area="@menu.Area" asp-controller="@menu.Controller"
+                                <li class="@menu.Classes["li"]">
+                                    <a class="@menu.Classes["a"]" asp-area="@menu.Area" asp-controller="@menu.Controller"
                                 asp-action="@menu.Action">@menu.Label</a>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-light" asp-area="@menu.Area" asp-controller="@menu.Controller"
-                                asp-action="@menu.Action">@menu.Label</a>
-                                    </li>
-                                }
+                                </li>
                             }
+                        }
+
+                        @if (Model.User != null)
+                        {
+                            <li class="mx-4">
+                                <div class="d-flex align-items-center m-auto">
+                                    <a asp-controller="User" asp-action="Profile" target="_self">
+                                        <img src="/Images/UserImage?id=@Model.User.Id" style="width: 45px; height: 45px" class="rounded-circle" />
+                                    </a>
+                                    <div class="ms-3">
+                                        <a class="text-light" asp-controller="User" asp-action="Profile" target="_self">
+                                            <p class="fw-bold mb-1">@Model.User.Username</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
                         }
                     </ul>
                 </div>
@@ -88,7 +93,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="d-flex justify-content-between bg-light align-items-center py-sm-3 px-md-4"> 
+                        <li class="d-flex justify-content-between bg-light align-items-center py-sm-3 px-md-4">
                             <div class="d-flex align-items-center m-auto">
                                 <a href="https://github.com/Matt-239" target="_blank">
                                     <img src="https://avatars.githubusercontent.com/u/105237637?s=64&v=4"
@@ -111,7 +116,7 @@
                                         class="rounded-circle" alt="" style="width: 45px; height: 45px" />
                                 </a>
                                 <div class="ms-3">
-                                    <a href="https://github.com/Matt-239" target="_blank">
+                                    <a href="https://github.com/VirtAltoKohi" target="_blank">
                                         <p class="fw-bold mb-1">Evan William James</p>
                                         <p class="text-muted mb-0">101351543 | 48620</p>
                                     </a>
@@ -125,7 +130,7 @@
                                         class="rounded-circle" alt="" style="width: 45px; height: 45px" />
                                 </a>
                                 <div class="ms-3">
-                                    <a href="https://github.com/Matt-239" target="_blank">
+                                    <a href="https://github.com/RyunKL" target="_blank">
                                         <p class="fw-bold mb-1">Ryan Lee</p>
                                         <p class="text-muted mb-0">101296633 | 48623</p>
                                     </a>
