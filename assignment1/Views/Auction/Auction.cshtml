@@ -82,4 +82,21 @@
         </div>
     }
 
+    <form asp-action="Review" method="post">
+        <div class="form-control rounded p-3">
+            @*Review Range*@
+            <div class="form-control mb-4">
+                <label for="reviewScore" class="form-label">Rating from 1 to 10</label>
+                <br>
+                <input type="range" for="reviewScore" min="1" max="10">
+                <br>
+                <label for="reviewBox" class="form-label">Give us a review of the product</label>
+                <br>
+                <textarea for="reviewBox" rows="4" cols="50"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-4">Submit Review</button>
+            <br>
+        </div>
+    </form>
+
 </div>
