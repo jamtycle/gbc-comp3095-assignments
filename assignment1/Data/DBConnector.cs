@@ -157,6 +157,28 @@ namespace assignment1.Data
             return new LoginModel(info.Rows[0]);
         }
 
+        public UserBase GetUser(string _email)
+        {
+            DataTable info = this.GetSQLData("[brb_get_user_by_email]", new Hashtable() { { "@email", _email } });
+            if (info.Rows.Count == 0) return null;
+            return new LoginModel(info.Rows[0]);
+        }
+
+        public bool SetPasswordResetCode(UserBase _user, string _code)
+        {
+            return this.NonQueryExecuteSQL("[brb_set_password_reset]", new Hashtable() { { "@user_id", _user.Id }, { "@reset_code", _code } }) == 1;
+        }
+
+        public bool ValidatePasswordResetCode(UserBase _user, string _code)
+        {
+            return this.GetSQLData("[brb_validate_password_reset]", new Hashtable() { { "@user_id", _user.Id }, { "@reset_code", _code } }).Rows.Count == 1;
+        }
+
+        public bool ConsumePasswordResetCode(UserBase _user, string _code)
+        {
+            return this.NonQueryExecuteSQL("[brb_consume_password_reset]", new Hashtable() { { "@user_id", _user.Id }, { "@reset_code", _code }, { "@password", _user.Password } }) == 1;
+        }
+
         public byte[] GetUserPic(int _id)
         {
             DataTable info = this.GetSQLData("[brb_get_user_pic]", new Hashtable() { { "@user_id", _id } });

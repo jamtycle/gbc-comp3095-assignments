@@ -27,9 +27,12 @@ namespace assignment1.Libs
             if (this.user is LoginModel @user)
             {
                 this.EncryptPassword();
-                var info = new DBConnector().LoginUser(@user);
-                if (info is LoginModel @dbuser) this.dbuser = @dbuser;
-                else errors.Add("login-error", (string)info);
+                if (@user.Id == -1) //TODO: Check 
+                {
+                    var info = new DBConnector().LoginUser(@user);
+                    if (info is LoginModel @dbuser) this.dbuser = @dbuser;
+                    else errors.Add("login-error", (string)info);
+                }
             }
             else if (this.user is RegistrationModel @reg)
             {
@@ -91,6 +94,15 @@ namespace assignment1.Libs
             //PeruvianSalt(ref pass);
             //user.Password = pass;
             return user.Password.Equals(hashed_ps, StringComparison.Ordinal);
+        }
+
+        public string GeneratePasswordResetCode()
+        {
+            if (this.user == null) throw new Exception("Non existing user passed to password reset.");
+
+            string reset_code = Guid.NewGuid().ToString("X");
+            new DBConnector().SetPasswordResetCode(this.user, reset_code);
+            return reset_code;
         }
         #endregion
 

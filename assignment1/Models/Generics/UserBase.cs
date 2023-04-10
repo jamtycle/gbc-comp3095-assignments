@@ -5,7 +5,7 @@ namespace assignment1.Models.Generics
 {
     public abstract class UserBase : ModelBase
     {
-        private int user_id;
+        private int user_id = -1;
         private int user_type_id;
         private string first_name;
         private string last_name;

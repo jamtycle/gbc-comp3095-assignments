@@ -4,68 +4,71 @@
     ViewData["Title"] = "Register";
 }
 
-<br>
-<h3 class="m-auto text-center">Register</h3>
-<br>
 
-<form asp-action="Register" method="post">
-    <div class="form-control rounded p-3">
-        @* Username *@
-        <div class="form-outline mb-4">
-            <input type="text" id="username" asp-for="Username" class="form-control" />
-            <label class="form-label" for="username">Username</label>
-            @* @Html.ValidationMessageFor(x => x.Username, null, htmlAttributes: new { @class = "form-control" }) *@
-        </div>
+<div class="my-auto">
+    <br>
+    <h3 class="mx-auto text-center">Register</h3>
+    <br>
 
-        <div class="row mb-4">
-            @* First Name *@
-            <div class="col">
-                <div class="form-outline">
-                    <input type="text" id="fname" asp-for="FirstName" class="form-control" />
-                    <label class="form-label" for="fname">First name</label>
-                    @* @Html.ValidationMessageFor(x => x.FirstName) *@
+    <form asp-action="Register" method="post">
+        <div class="form-control rounded p-3">
+            @* Username *@
+            <div class="form-outline mb-4">
+                <input type="text" id="username" asp-for="Username" class="form-control" />
+                <label class="form-label" for="username">Username</label>
+                @* @Html.ValidationMessageFor(x => x.Username, null, htmlAttributes: new { @class = "form-control" }) *@
+            </div>
+
+            <div class="row mb-4">
+                @* First Name *@
+                <div class="col">
+                    <div class="form-outline">
+                        <input type="text" id="fname" asp-for="FirstName" class="form-control" />
+                        <label class="form-label" for="fname">First name</label>
+                        @* @Html.ValidationMessageFor(x => x.FirstName) *@
+                    </div>
+                </div>
+                @* Last Name *@
+                <div class="col">
+                    <div class="form-outline">
+                        <input type="text" id="lname" asp-for="LastName" class="form-control" />
+                        <label class="form-label" for="lname">Last name</label>
+                        @* @Html.ValidationMessageFor(x => x.LastName) *@
+                    </div>
                 </div>
             </div>
-            @* Last Name *@
-            <div class="col">
-                <div class="form-outline">
-                    <input type="text" id="lname" asp-for="LastName" class="form-control" />
-                    <label class="form-label" for="lname">Last name</label>
-                    @* @Html.ValidationMessageFor(x => x.LastName) *@
-                </div>
+
+            @* Email *@
+            <div class="form-outline mb-4">
+                <input type="email" id="uemail" asp-for="Email" class="form-control" />
+                <label class="form-label" for="uemail">Email</label>
+                @* @Html.ValidationMessageFor(x => x.Email) *@
+            </div>
+
+            @* Password *@
+            <div class="form-outline mb-4">
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id ="pass" })
+                <label class="form-label" for="pass">Password</label>
+                @* @Html.ValidationMessageFor(x => x.Password) *@
+            </div>
+
+            @* Confirm Password *@
+            <div class="form-outline mb-4">
+                @Html.PasswordFor(model => model.VerifyPassword, new { @class = "form-control", @id = "confirmps" })
+                <label class="form-label" for="confirmps">Confirm Password</label>
+                @* @Html.ValidationMessageFor(x => x.VerifyPassword) *@
+            </div>
+
+            @Html.PartialAsync("_ValidationSummary", ViewData.ModelState).Result
+
+            <br>
+
+            @* Submit Button *@
+            <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+
+            <div class="text-center">
+                <p>Already a member? <a asp-action="Login">Login</a></p>
             </div>
         </div>
-
-        @* Email *@
-        <div class="form-outline mb-4">
-            <input type="email" id="uemail" asp-for="Email" class="form-control" />
-            <label class="form-label" for="uemail">Email</label>
-            @* @Html.ValidationMessageFor(x => x.Email) *@
-        </div>
-
-        @* Password *@
-        <div class="form-outline mb-4">
-            @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id ="pass" })
-            <label class="form-label" for="pass">Password</label>
-            @* @Html.ValidationMessageFor(x => x.Password) *@
-        </div>
-
-        @* Confirm Password *@
-        <div class="form-outline mb-4">
-            @Html.PasswordFor(model => model.VerifyPassword, new { @class = "form-control", @id = "confirmps" })
-            <label class="form-label" for="confirmps">Confirm Password</label>
-            @* @Html.ValidationMessageFor(x => x.VerifyPassword) *@
-        </div>
-
-        @Html.PartialAsync("_ValidationSummary", ViewData.ModelState).Result
-
-        <br>
-
-        @* Submit Button *@
-        <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
-
-        <div class="text-center">
-            <p>Already a member? <a asp-action="Login">Login</a></p>
-        </div>
-    </div>
-</form>
+    </form>
+</div>
