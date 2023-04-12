@@ -356,7 +356,8 @@ AS
 BEGIN
 
     SELECT auction_id, user_id, auction_name, start_price, buy_now_price, start_date, end_date, comission, tax, discount_percentage, condition, [description] FROM auction WHERE auction_id = @auction_id;
-    SELECT * FROM bid WHERE auction_id = @auction_id;
+
+    SELECT b.id, b.auction_id, b.user_id, u.username, b.bid_date, CAST(b.bid_amount AS FLOAT) AS bid_amount FROM bid b JOIN [user] u ON b.user_id = u.user_id WHERE auction_id = @auction_id;
 
 END
 
