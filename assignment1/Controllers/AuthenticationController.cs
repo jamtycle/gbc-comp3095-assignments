@@ -94,6 +94,8 @@ namespace assignment1.Controllers
 
             if (auth.ValidatePassword())
             {
+                if (auth.TwoFactorAuth(this.Response)) return View("TwoFactor", auth.User);
+
                 auth.GenerateSession();
                 if (new DBConnector().SetSession(auth.User.Username, auth.User.SessionCookie))
                 {
@@ -173,9 +175,51 @@ namespace assignment1.Controllers
             int uid = BitConverter.ToInt32(b, 0);
             UserBase user = new DBConnector().GetUser(uid);
             user.Password = _model.Password;
-            Auth auth = new (user);
+            Auth auth = new(user);
             if (new DBConnector().ConsumePasswordResetCode(auth.User, pk)) return RedirectToAction("Login", "Auth");
             else return View();
+        }
+
+        [HttpPost("TwoFactor")]
+        public IActionResult TwoFactor(char d1, char d2, char d3, char d4, char d5, char d6)
+        {
+            if (!Request.Cookies.ContainsKey("user_tfa")) return RedirectToAction("Login", "Auth");
+
+            string[] values = Request.Cookies["user_tfa"].Split('_');
+            // 0 - uid | 1 - Remember_me
+
+            byte[] b = Convert.FromHexString(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(values[0])));
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(b);
+
+            int user_id = BitConverter.ToInt32(b, 0);
+            UserBase user = new DBConnector().GetUser(user_id);
+            if (user == null) return RedirectToAction("Login", "Auth");
+
+            Auth auth = new(user);
+
+            if (!int.TryParse(new string(new char[] { d1, d2, d3, d4, d5, d6 }), out int code)) {
+                ViewBag.Error = "The code entered is not a number? 🤔";
+                return View(auth.User);
+            }
+
+            if (!auth.ValidateTwoFactor(code)) {
+                ViewBag.Error = "Code entered mismatch.";
+                return View(auth.User);
+            }
+
+            
+            auth.GenerateSession();
+            if (!new DBConnector().SetSession(auth.User.Username, auth.User.SessionCookie)) return View(auth.User);
+
+            Response.Cookies.Append("user_session", user.SessionCookie, new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(bool.Parse(values[1]) ? 7 : 1),
+                Path = "/"
+            });
+
+            return GoToIndex();
         }
         #endregion
 

@@ -1,0 +1,106 @@
+@model assignment1.Models.Auth.LoginModel;
+
+@{
+    ViewData["Title"] = "Two Factor";
+}
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<div class="card text-center m-auto w-100">
+    <div class="card-header h5">Two Factor Authenticator</div>
+    <form asp-action="TwoFactor" class="card-body px-5" method="POST">
+        @if (ViewBag.Error == null)
+        {
+            <input type="number" id="d1" name="d1" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-secondary border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d2" name="d2" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-secondary border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d3" name="d3" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-secondary border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d4" name="d4" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-secondary border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d5" name="d5" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-secondary border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d6" name="d6" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-secondary border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+        }
+        else
+        {
+            <input type="number" id="d1" name="d1" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-danger border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d2" name="d2" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-danger border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d3" name="d3" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-danger border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d4" name="d4" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-danger border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d5" name="d5" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-danger border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+            <input type="number" id="d6" name="d6" min="0" max="9" onInput="moveBetweenInputs(event)"
+                class="border border-danger border-2 rounded-3 px-2 py-3 mx-1 my-3 fs-1 fw-bold text-center"
+                style="width: 1.5em;" />
+
+            <br>
+            <span class="text-danger">@ViewBag.Error</span>
+        }
+        <button type="submit" class="btn btn-primary w-100 mt-3">Authenticate</button>
+    </form>
+</div>
+
+
+<script>
+    document.addEventListener("paste", (event) => {
+        let paste = (event.clipboardData || window.clipboardData).getData("text");
+        paste = paste.replaceAll("\n", "");
+        for (let i = 1; i < 7; i++) {
+            let el = document.getElementById(`d${i}`);
+            if (el) {
+                el.value = paste[i];
+                el.focus();
+            }
+        }
+    });
+
+    function moveBetweenInputs(event) {
+        if (event.target.value.length == 0) {
+            let next = `d${parseInt(event.target.id.substring(1, 2)) - 1}`;
+            let next_el = document.getElementById(next);
+            if (next_el) {
+                next_el.focus();
+            }
+        }
+
+        if (event.target.value.length > 1) {
+            let val = event.target.value.substring(0, 1);
+            event.target.value = val.substring(0, 1);
+
+            let next = `d${parseInt(event.target.id.substring(1, 2)) + 1}`;
+            let next_el = document.getElementById(next);
+            if (next_el) {
+                next_el.focus();
+            }
+        }
+    }
+
+</script>

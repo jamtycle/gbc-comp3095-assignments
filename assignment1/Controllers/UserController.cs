@@ -1,6 +1,8 @@
 using assignment1.Data;
+using assignment1.Libs;
 using assignment1.Models;
 using assignment1.Models.Generics;
+using assignment1.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace assignment1.Controllers
@@ -68,6 +70,52 @@ namespace assignment1.Controllers
                 Menus = this.GetMenus(user),
                 Data = user
             });
+        }
+
+        [HttpGet("EditProfile")]
+        public IActionResult EditProfile()
+        {
+            if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return UserPage(null);
+
+            UserBase user = this.RecoverUserSession();
+            return View("EditProfile", new LayoutModel<ProfileUser>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = new ProfileUser(user)
+            });
+        }
+
+        [HttpPost("EditProfile")]
+        public IActionResult EditProfile(LayoutModel<ProfileUser> _model)
+        {
+            if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return UserPage(null);
+
+            if (!ModelState.IsValid) View(_model);
+            UserBase user = this.RecoverUserSession();
+            user.ProfilePic = GetImageFromRequest("Data.ProfilePic");
+            if (new DBConnector().UpdateUser(user, true)) return View("UserView", new LayoutModel<UserBase>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = user
+            });
+            return View(new LayoutModel<ProfileUser>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = new ProfileUser(user)
+            });
+        }
+
+        public byte[] GetImageFromRequest(string _name)
+        {
+            using var ms = new MemoryStream();
+            IFormFile file = Request.Form.Files[_name];
+            if (file == null) return Array.Empty<byte>();
+            // Request.Form.Files[_name]
+            file.CopyTo(ms);
+            return ms.ToArray();
         }
     }
 }
