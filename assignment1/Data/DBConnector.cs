@@ -5,6 +5,7 @@ using assignment1.Models;
 using assignment1.Models.Auction;
 using assignment1.Models.Auth;
 using assignment1.Models.Generics;
+using assignment1.Models.Users;
 using Data;
 
 namespace assignment1.Data
@@ -157,10 +158,58 @@ namespace assignment1.Data
             return new LoginModel(info.Rows[0]);
         }
 
+        public UserBase GetUser(string _email)
+        {
+            DataTable info = this.GetSQLData("[brb_get_user_by_email]", new Hashtable() { { "@email", _email } });
+            if (info.Rows.Count == 0) return null;
+            return new LoginModel(info.Rows[0]);
+        }
+
+        public bool SetPasswordResetCode(UserBase _user, string _code)
+        {
+            return this.NonQueryExecuteSQL("[brb_set_password_reset]", new Hashtable() { { "@user_id", _user.Id }, { "@reset_code", _code } }) == 1;
+        }
+
+        public bool ValidatePasswordResetCode(UserBase _user, string _code)
+        {
+            return this.GetSQLData("[brb_validate_password_reset]", new Hashtable() { { "@user_id", _user.Id }, { "@reset_code", _code } }).Rows.Count == 1;
+        }
+
+        public bool ConsumePasswordResetCode(UserBase _user, string _code)
+        {
+            return this.NonQueryExecuteSQL("[brb_consume_password_reset]", new Hashtable() { { "@user_id", _user.Id }, { "@reset_code", _code }, { "@password", _user.Password } }) == 1;
+        }
+
+        public bool SetTwoFactorCode(UserBase _user, string _tf_code)
+        {
+            return this.NonQueryExecuteSQL("[brb_tf_set_code]", new Hashtable() { { "@user_id", _user.Id }, { "@tf_code", _tf_code } }) == 1;
+        }
+
+        public string GetTwoFactorCode(UserBase _user)
+        {
+            DataTable info = this.GetSQLData("[brb_tf_get_code]", new Hashtable() { { "@user_id", _user.Id } });
+            if(info.Rows.Count == 0) return string.Empty;
+            return (string)info.Rows[0]["two_factor_code"];
+        }
+
         public byte[] GetUserPic(int _id)
         {
             DataTable info = this.GetSQLData("[brb_get_user_pic]", new Hashtable() { { "@user_id", _id } });
             return info.Rows.Count == 0 ? Array.Empty<byte>() : (byte[])(info.Rows[0]["profile_pic"] is DBNull ? Array.Empty<byte>() : info.Rows[0]["profile_pic"]);
+        }
+
+        public bool UpdateProfile(UserBase _user)
+        {
+            var model = GetDataModel("UserType");
+            model.Rows.Add(_user.ToDataRow(model));
+            return this.NonQueryExecuteSQL("[brb_update_profile]", new Hashtable() { { "@user", model } }) == 1;
+        }
+
+        public IEnumerable<UserBase>GetAllUsers()
+        {
+            DataTable info = this.GetSQLData("[brb_get_all_users]");
+            foreach (DataRow row in info.Rows)
+                yield return new ManagedUser(row);
         }
     }
 }

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/assignment1.styles.css" asp-append-version="true" />
 </head>
 
-<body>
+<body style="overflow: hidden;">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -27,8 +27,8 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3 main-auth m-auto">
+    <div class="container" style="height: 84vh;">
+        <main role="main" class="pb-3 main-auth m-auto h-100 d-flex flex-column">
             @RenderBody()
         </main>
     </div>

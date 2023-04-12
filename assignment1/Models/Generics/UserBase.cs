@@ -5,7 +5,7 @@ namespace assignment1.Models.Generics
 {
     public abstract class UserBase : ModelBase
     {
-        private int user_id;
+        private int user_id = -1;
         private int user_type_id;
         private string first_name;
         private string last_name;
@@ -15,6 +15,8 @@ namespace assignment1.Models.Generics
         private byte[] profile_pic;
         private DateTime date_of_birth;
         private string validation_key;
+        private bool two_factor_auth;
+        private string two_factor_code;
 
         public UserBase() : base() { }
 
@@ -37,6 +39,9 @@ namespace assignment1.Models.Generics
         public virtual byte[] ProfilePic { get => profile_pic; set => profile_pic = value; }
         public virtual DateTime DateOfBirth { get => date_of_birth; set => date_of_birth = value; }
         public virtual string ValidationKey { get => validation_key; set => validation_key = value; }
+
+        public virtual bool TwoFactorAuth { get => two_factor_auth; set => two_factor_auth = value; }
+        public virtual string TwoFactorCode { get => two_factor_code; set => two_factor_code = value; }
 
         public string UserType => user_type_table.FirstOrDefault(x => x.UserTypeId.Equals(this.user_type_id))?.UserTypeName ?? string.Empty;
     }

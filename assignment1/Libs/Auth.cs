@@ -27,9 +27,12 @@ namespace assignment1.Libs
             if (this.user is LoginModel @user)
             {
                 this.EncryptPassword();
-                var info = new DBConnector().LoginUser(@user);
-                if (info is LoginModel @dbuser) this.dbuser = @dbuser;
-                else errors.Add("login-error", (string)info);
+                if (@user.Id == -1) // TODO: Check  
+                {
+                    var info = new DBConnector().LoginUser(@user);
+                    if (info is LoginModel @dbuser) this.dbuser = @dbuser;
+                    else errors.Add("login-error", (string)info);
+                }
             }
             else if (this.user is RegistrationModel @reg)
             {
@@ -72,6 +75,50 @@ namespace assignment1.Libs
         }
         #endregion
 
+        #region Two Factor Authentication
+        public bool TwoFactorAuth(HttpResponse _response)
+        {
+            if (!this.dbuser.TwoFactorAuth) return false;
+
+            int tf_code = new Random().Next(100000, 999999);
+            string tf_code_encrypt = GenerateSHA256(tf_code);
+            this.user.TwoFactorCode = tf_code_encrypt;
+
+            if (!new DBConnector().SetTwoFactorCode(this.dbuser, tf_code_encrypt)) return false;
+
+            WriteTFACookie(_response);
+            string body = Persistent.TwoFactorEmail;
+            body = string.Format(body, tf_code.ToString().ToCharArray().Select(x => x.ToString()).ToArray());
+            string status = new MailTOGO.Sending(body, Persistent.EmailInfo)
+            {
+                IsHTML = true,
+                Subject = "Best Auction - TFA",
+                To = new string[1] { this.dbuser.Email },
+            }.MailTOGO();
+
+            return status.Equals("send");
+        }
+
+        private void WriteTFACookie(HttpResponse _response)
+        {
+            string cookie = $"{GenerateBase64(UTF8.GetBytes($"{this.dbuser.Id:X10}"))}_{this.user.GetType().GetProperty("RememberMe", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public).GetValue(this.user, null)}";
+            _response.Cookies.Append("user_tfa", cookie, new CookieOptions()
+            {
+                Expires = DateTime.Now.AddMinutes(10),
+                Path = "/"
+            });
+        }
+
+        public bool ValidateTwoFactor(int _code)
+        {
+            if (!this.user.TwoFactorAuth) return false;
+
+            string dbtfcode = new DBConnector().GetTwoFactorCode(this.user);
+            string tfcode = GenerateSHA256(_code);
+            return dbtfcode.Equals(tfcode, StringComparison.Ordinal);
+        }
+        #endregion
+
         #region Passwords
         public void EncryptPassword()
         {
@@ -91,6 +138,15 @@ namespace assignment1.Libs
             //PeruvianSalt(ref pass);
             //user.Password = pass;
             return user.Password.Equals(hashed_ps, StringComparison.Ordinal);
+        }
+
+        public string GeneratePasswordResetCode()
+        {
+            if (this.user == null) throw new Exception("Non existing user passed to password reset.");
+
+            string reset_code = Guid.NewGuid().ToString("X");
+            new DBConnector().SetPasswordResetCode(this.user, reset_code);
+            return reset_code;
         }
         #endregion
 
@@ -112,6 +168,7 @@ namespace assignment1.Libs
 
         private static void PeruvianSalt(ref string _potatoes)
         {
+            if (_potatoes == null) return;
             var char_nums = _potatoes.Select(x => x - '0');
             var salt = char_nums.Select((x, i) => Math.Tan(x));
             var pepper = char_nums.Select((x, i) => Math.Log(x, 6) / Math.Cos(x * Math.PI) - 0.2);

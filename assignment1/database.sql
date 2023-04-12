@@ -355,8 +355,7 @@ CREATE PROCEDURE [dbo].[brb_get_auction]
 AS
 BEGIN
 
-    -- TODO: Remove [image] from the SELECT statement.
-    SELECT auction_id, user_id, auction_name, start_price, buy_now_price, start_date, end_date, comission, tax, discount_percentage, condition, [description], [image] FROM auction WHERE auction_id = @auction_id;
+    SELECT auction_id, user_id, auction_name, start_price, buy_now_price, start_date, end_date, comission, tax, discount_percentage, condition, [description] FROM auction WHERE auction_id = @auction_id;
     SELECT * FROM bid WHERE auction_id = @auction_id;
 
 END
@@ -382,9 +381,23 @@ CREATE PROCEDURE [dbo].[brb_get_user]
 AS
 BEGIN
 
-    SELECT  user_id, user_type_id, username, [session], date_of_birth, first_name, last_name, email, profile_pic
+    SELECT  user_id, user_type_id, username, [session], date_of_birth, first_name, last_name, email, two_factor_auth
     FROM    [user] 
     WHERE   user_id = @user_id;
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_get_user_by_email]
+(
+    @email NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    SELECT  user_id, user_type_id, username, [session], first_name, last_name
+    FROM    [user] 
+    WHERE   email = @email;
 
 END
 
@@ -403,13 +416,132 @@ BEGIN
 END
 
 GO
+CREATE PROCEDURE [dbo].[brb_set_password_reset]
+(
+    @user_id INT,
+    @reset_code NVARCHAR(MAX)
+)
+AS
+BEGIN
+    
+    UPDATE  [user]
+    SET     reset_code = @reset_code
+    WHERE   [user_id] = @user_id
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_validate_password_reset]
+(
+    @user_id INT,
+    @reset_code NVARCHAR(MAX)
+)
+AS
+BEGIN
+    
+    SELECT user_id FROM [user] WHERE user_id = @user_id AND reset_code = @reset_code
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_consume_password_reset]
+(
+    @user_id INT,
+    @reset_code NVARCHAR(MAX),
+    @password NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    UPDATE  [user]
+    SET     [password] = @password,
+            reset_code = NULL
+    WHERE   user_id = @user_id
+            AND reset_code = @reset_code
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_consume_password_reset]
+(
+    @user_id INT,
+    @reset_code NVARCHAR(MAX),
+    @password NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    UPDATE  [user]
+    SET     [password] = @password,
+            reset_code = NULL
+    WHERE   user_id = @user_id
+            AND reset_code = @reset_code
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_consume_password_reset]
+(
+    @user_id INT,
+    @reset_code NVARCHAR(MAX),
+    @password NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    UPDATE  [user]
+    SET     [password] = @password,
+            reset_code = NULL
+    WHERE   user_id = @user_id
+            AND reset_code = @reset_code
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_tf_set_code]
+(
+    @user_id INT,
+    @tf_code NVARCHAR(MAX)
+)
+AS
+BEGIN
+
+    IF ((SELECT two_factor_auth FROM [user] WHERE [user_id] = @user_id) = 0)
+    BEGIN
+        RETURN;
+    END
+
+    UPDATE  [user]
+    SET     two_factor_code = @tf_code
+    WHERE   user_id = @user_id
+
+END
+
+GO
+ALTER PROCEDURE [dbo].[brb_tf_get_code]
+(
+    @user_id INT
+)
+AS
+BEGIN
+
+    IF (SELECT two_factor_auth FROM [user] WHERE [user_id] = @user_id) = 0
+    BEGIN
+        RETURN;
+    END
+
+    SELECT two_factor_code FROM [user] WHERE user_id = @user_id
+
+END
+
+GO
 CREATE PROCEDURE [dbo].[brb_get_user_types]
 AS
 BEGIN
     SELECT * FROM user_type;
 END
-GO
 
+GO
 CREATE PROCEDURE [dbo].[brb_user_validation_key]
 (
     @key NVARCHAR(MAX)
@@ -420,5 +552,14 @@ BEGIN
     UPDATE  [user]
     SET     [validation_key] = NULL
     WHERE   [validation_key] = @key
+
+END
+
+GO
+CREATE PROCEDURE [dbo].[brb_get_all_users]
+AS
+BEGIN
+
+    SELECT user_id, username, date_of_birth, email, first_name, last_name, user_type_id FROM [user] WHERE user_type_id IN (1, 2)
 
 END
