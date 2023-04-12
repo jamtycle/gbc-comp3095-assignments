@@ -13,6 +13,11 @@ namespace assignment1.Models.Auction
         private DateTime bid_date;
         private double bid_amount;
 
+        public BidModel() : base()
+        {
+
+        }
+
         public BidModel(DataRow _row) : base(_row)
         {
 
@@ -34,8 +39,7 @@ namespace assignment1.Models.Auction
         public int AuctionId { get => auction_id; set => auction_id = value; }
         [Required]
         public int UserId { get => user_id; set => user_id = value; }
-        [Required]
-        public DateTime BidDate { get => bid_date; set => bid_date = value; }
+        public DateTime BidDate { get => bid_date.ToLocalTime(); set => bid_date = value; }
         [Required]
         public double BidAmount { get => bid_amount; set => bid_amount = value; }
         public string UserUsername { get => user_username; set => user_username = value; }

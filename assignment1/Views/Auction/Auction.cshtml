@@ -32,21 +32,24 @@
                 <h5 class="col-md-4 col-sm-1 text-end my-auto">Buy it now:</h5>
                 <form asp-action="BuyNowAuction" method="post" class="col-md-5 col-sm-2">
                     @if(Model.User != null) {
-                        <input type="hidden" asp-for="User.Id" name="user_id">
-                        <input type="hidden" asp-for="Data.AuctionId" name="auction_id">
-                        <input type="hidden" asp-for="Data.BuyNowPrice" name="but_now_price">
+                        <input type="hidden" asp-for="Data.AuctionId" id="auction_id" name="auction_id">
                     }
                     <span class="d-inline-block" tabindex="0" data-mdb-toggle="tooltip" title="@(Model.User == null ? "Log in to buy!" : "")">
-                        <button type="submit" class="btn btn-secondary btn-rounded fs-6" @(Model.User == null ? "disabled" : "")>@Model.Data.BuyNowPrice.ToString("C2")</button>
+                        <button type="submit" class="btn btn-secondary btn-rounded fs-6" @(Model.User == null ? "disabled" : "") @(Model.Data.LastBid != null && Model.Data.LastBid.BidAmount >= Model.Data.BuyNowPrice ? "disabled" : "")>
+                            @Model.Data.BuyNowPrice.ToString("C2")
+                        </button>
                     </span>
                 </form>
             </div>
 
             <div class="text-center mt-4">
                 <form class="row justify-content-center" asp-action="PlaceBid" asp-route-bid="bid_amt" method="post">
+                    @if(Model.User != null) {
+                        <input type="hidden" asp-for="Data.AuctionId" id="auction_id" name="auction_id">
+                    }
                     <div class="form-outline w-25 col-md-4 fs-6">
                         <i class="fas fa-dollar-sign trailing"></i>
-                        <input class="form-control form-icon-trailing fs-5 active" min="@Model.Data.BidStart" type="number" id="bid_amt" name="bid_amt" value="@Model.Data.BidStart"/>
+                        <input class="form-control form-icon-trailing fs-5 active" min="@Model.Data.BidStart.ToString("C2")" type="number" id="bid_amt" name="bid_amt" value="@Model.Data.BidStart.ToString("C2")"/>
                         <label class="form-label" for="bid_amt">Bid amount</label>
                     </div>
                     <span class="col-md-4" tabindex="0" data-mdb-toggle="tooltip" title="@(Model.User == null ? "Log in to buy!" : "")">
@@ -54,6 +57,13 @@
                     </span>
                 </form>
             </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="row justify-content-center mt-4">
+                    <p class="text-danger text-center my-auto fw-bold">@ViewBag.Error</p>
+                </div>
+            }
 
         </div>
     </div>
@@ -70,13 +80,13 @@
                 @foreach (var bid in Model.Data.Bids)
                 {
                     <li class="list-group-item">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">@bid.UserUsername</div>
-                        <small>@bid.BidDate</small>
-                        <small>@bid.BidAmount</small>
-                    </div>
-                    <span class="badge badge-primary rounded-pill">14</span>
-                </li>
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">@bid.UserUsername</div>
+                            <small>@bid.BidDate</small>
+                            <small>@bid.BidAmount</small>
+                            <span class="badge badge-primary rounded-pill">14</span>
+                        </div>
+                   </li>
                 }
             </ul>
         </div>

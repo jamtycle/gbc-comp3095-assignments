@@ -94,12 +94,8 @@ namespace assignment1.Controllers
             if (!ModelState.IsValid) View(_model);
             UserBase user = this.RecoverUserSession();
             user.ProfilePic = GetImageFromRequest("Data.ProfilePic");
-            if (new DBConnector().UpdateUser(user, true)) return View("UserView", new LayoutModel<UserBase>()
-            {
-                User = user,
-                Menus = this.GetMenus(user),
-                Data = user
-            });
+            if (new DBConnector().UpdateUser(user, true)) return UserPage(user.Id);
+
             return View(new LayoutModel<ProfileUser>()
             {
                 User = user,

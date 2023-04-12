@@ -51,17 +51,60 @@ namespace assignment1.Controllers
         }
 
         [HttpPost("PlaceBid")]
-        public IActionResult PlaceBid(BidModel _bid)
+        public IActionResult PlaceBid(int auction_id, float bid_amt)
         {
             UserBase user = this.RecoverUserSession();
-            LayoutModel<BidModel> model = new() { User = user, Menus = this.GetMenus(user), Data = _bid };
+            if (user == null) return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id }); // Auction(auction_id);
 
-            if (!ModelState.IsValid) return View(model);
+            BidModel bid = new ()
+            {
+                AuctionId = auction_id,
+                BidAmount = bid_amt,
+                BidDate = DateTime.UtcNow,
+                UserId = user.Id
+            };
 
-            if (new DBConnector().AddBid(_bid))
-                return Auction(_bid.AuctionId);
+            AuctionModel auction = new DBConnector().GetAuction(auction_id);
+            if (auction.LastBid?.BidAmount >= bid_amt) {
+                ViewBag.Error = "The bid entered is less or equals than the actual bid.";
+                return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id });
+            }
 
-            return View(model);
+            if (auction.StartPrice > bid_amt) {
+                ViewBag.Error = "The bid entered is less than the start price.";
+                return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id });
+            }
+
+            if (!new DBConnector().AddBid(bid))
+                ViewBag.Error = "Something went wrong 🥲";
+
+            return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id });
+        }
+
+        [HttpPost("BuyNowAuction")]
+        public IActionResult BuyNowAuction(int auction_id)
+        {
+            UserBase user = this.RecoverUserSession();
+            if (user == null) return Auction(auction_id);
+
+            AuctionModel auction = new DBConnector().GetAuction(auction_id);
+            BidModel bid = new ()
+            {
+                AuctionId = auction_id,
+                BidAmount = auction.BuyNowPrice,
+                BidDate = DateTime.UtcNow,
+                UserId = user.Id
+            };
+
+            if (auction.LastBid.BidAmount >= auction.BuyNowPrice) {
+                ViewBag.Error = "You cannot buy now this product anymore";
+                return Auction(auction_id);
+            }
+
+            if (!new DBConnector().AddBid(bid))
+                ViewBag.Error = "Something went wrong 🥲";
+
+            return Auction(bid.AuctionId);
         }
 
         [HttpPost("NewAuction")]

@@ -70,7 +70,7 @@ namespace assignment1.Models.Auction
             get 
             {
                 var mbid = bids.Max();
-                return mbid == null ? StartPrice : mbid.BidAmount + 0.1;
+                return (mbid == null ? StartPrice : mbid.BidAmount < StartPrice ? StartPrice : mbid.BidAmount) + 0.1;
             }
         }
 
