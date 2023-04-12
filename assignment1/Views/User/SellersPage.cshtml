@@ -1,0 +1,47 @@
+﻿@model assignment1.Models.LayoutModel<assignment1.Models.Generics.UserBase>
+
+@{
+    ViewData["Title"] = "SellersPage";
+}
+
+<br>
+<div>
+    <div class="d-flex align-items-center border-1">
+        <img src="/Images/UserImage?id=@Model.Data.Id" alt="@Model.Data.Username profile picture" style="width: 250px; height: 250px" class="rounded-circle" />
+        <div class="ms-3">
+            <div class="container">
+                <div class="row gx-5 align-items-center mb-3">
+                    <div class="col-md-6 m-auto">
+                        <h1 style="margin: auto;">@Model.Data.Username</h1>
+                    </div>
+                    <div class="col-md-6" style="padding-right: .2em;">
+                        <span
+                            class="badge rounded-pill badge-success">@Model.Data.UserType</span>
+                    </div>
+                </div>
+                <div class="row gx-5">
+                    <p>@Model.Data.FirstName @Model.Data.LastName</p>
+                </div>
+                <div class="row gx-5">
+                    <p>@Model.Data.Email</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form asp-action="Review" method="post">
+        <div class="form-control rounded p-3">
+            @*Review Range*@
+            <div class="form-control mb-4">
+                <label for="reviewScore" class="form-label">Rating from 1 to 10</label>
+                <br>
+                <input type="range" for="reviewScore" min="1" max="10">
+                <br>
+                <label for="reviewBox" class="form-label">Give us a review of the product</label>
+                <br>
+                <textarea for="reviewBox" rows="4" cols="50"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-4">Submit Review</button>
+            <br>
+        </div>
+    </form>
+</div>
