@@ -5,6 +5,7 @@ using assignment1.Models;
 using assignment1.Models.Auction;
 using assignment1.Models.Auth;
 using assignment1.Models.Generics;
+using assignment1.Models.Home;
 using assignment1.Models.Users;
 using Data;
 
@@ -67,8 +68,10 @@ namespace assignment1.Data
                 yield return new AuctionModel(row);
         }
 
-        public IEnumerable<AuctionModel> SearchAuctions(string _search)
+        public IEnumerable<AuctionModel> SearchAuctions(SearchModel _search)
         {
+            // string _search, string _condition, double _min_price, double _max_price, string _status
+
             // Option 1 - Local Linear Search
             // IEnumerable<AuctionModel> data = this.GetLastAuctions(LandingPageAuctionsOptions.Last100);
             // return data.Where(x =>
@@ -88,7 +91,15 @@ namespace assignment1.Data
             // });
 
             // Option 2 - Database Search
-            DataTable data = this.GetSQLData("[brb_auction_search]", new Hashtable() { { "@search", _search ?? string.Empty } });
+            DataTable data = this.GetSQLData("[brb_auction_search]", new Hashtable()
+            {
+                { "@search", _search.SearchText },
+                { "@condition", _search.ConditionText },
+                { "@min_price", _search.MinPrice },
+                { "@max_price", _search.MaxPrice },
+                { "@status", _search.Status },
+            });
+
             foreach (DataRow row in data.Rows)
                 yield return new AuctionModel(row);
 
@@ -140,6 +151,13 @@ namespace assignment1.Data
             return (int)info.Rows[0]["id"];
         }
 
+        public bool UpdateAuction(AuctionModel _auction, bool _deep_copy = false)
+        {
+            var model = this.GetDataModel("AuctionType");
+            model.Rows.Add(_auction.ToDataRow(model, _deep_copy));
+            return this.NonQueryExecuteSQL("[brb_CRUD_auction]", new Hashtable() { { "@table", model }, { "@type", CRUD.Update } }) == 1;
+        }
+
         public bool UserValidationKey(string _key)
         {
             return this.NonQueryExecuteSQL("[brb_user_validation_key]", new Hashtable() { { "@key", _key } }) > 0;
@@ -150,7 +168,7 @@ namespace assignment1.Data
             string sql = $"DECLARE @table {_model_name}; SELECT * FROM @table;";
             return this.GetSQLData(sql);
         }
-        
+
         public UserBase GetUser(int _id)
         {
             DataTable info = this.GetSQLData("[brb_get_user]", new Hashtable() { { "@user_id", _id } });
@@ -188,7 +206,7 @@ namespace assignment1.Data
         public string GetTwoFactorCode(UserBase _user)
         {
             DataTable info = this.GetSQLData("[brb_tf_get_code]", new Hashtable() { { "@user_id", _user.Id } });
-            if(info.Rows.Count == 0) return string.Empty;
+            if (info.Rows.Count == 0) return string.Empty;
             return (string)info.Rows[0]["two_factor_code"];
         }
 
@@ -205,7 +223,7 @@ namespace assignment1.Data
             return this.NonQueryExecuteSQL("[brb_update_profile]", new Hashtable() { { "@user", model } }) == 1;
         }
 
-        public IEnumerable<UserBase>GetAllUsers()
+        public IEnumerable<UserBase> GetAllUsers()
         {
             DataTable info = this.GetSQLData("[brb_get_all_users]");
             foreach (DataRow row in info.Rows)

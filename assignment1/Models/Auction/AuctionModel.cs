@@ -25,6 +25,8 @@ namespace assignment1.Models.Auction
         private string condition;
         private string description;
 
+        private bool? has_been_buyed = null;
+
         public AuctionModel() : base() { }
 
         public AuctionModel(DataRow _auction) : base(_auction)
@@ -54,16 +56,17 @@ namespace assignment1.Models.Auction
 
         public float Comission { get => comission; set => comission = value; }
         public float Tax { get => tax; set => tax = value; }
-        public float Discount_percentage { get => discount_percentage; set => discount_percentage = value; }
+        public float DiscountPercentage { get => discount_percentage; set => discount_percentage = value; }
 
         public IEnumerable<BidModel> Bids { get => bids; set => bids = value; }
 
-        // [Required] // Uncomment this if this is important.
         public byte[] Image { get => image; set => image = value; }
-        public string Base64Image => $"data:image;base64,{(image == null ? string.Empty : Convert.ToBase64String(image))}";
         [Required] 
         public string Condition { get => condition; set => condition = value; }
         public string Description { get => description; set => description = value; }
+
+        public bool HasBeenBuyedNow { get => has_been_buyed ?? Bids?.FirstOrDefault(x => x.BuyedNow) != null; }
+        public bool IsActive { get => !HasBeenBuyedNow && DateTime.UtcNow <= EndDate; }
 
         public double BidStart
         {

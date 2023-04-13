@@ -163,7 +163,8 @@ CREATE TYPE [dbo].[BidType] AS TABLE(
 	[auction_id] [int] NOT NULL,
 	[user_id] [int] NOT NULL,
 	[bid_date] [datetime2](0) NOT NULL,
-	[bid_amount] [decimal](8, 2) NOT NULL
+	[bid_amount] [decimal](8, 2) NOT NULL,
+    [buyed_now] [bit] NOT NULL
 )
 GO
 
@@ -178,8 +179,8 @@ BEGIN
     IF (@type = 0) -- CREATE
     BEGIN
 
-        INSERT INTO bid(auction_id, user_id, bid_date, bid_amount)
-        SELECT auction_id, user_id, bid_date, bid_amount FROM @table
+        INSERT INTO bid(auction_id, user_id, bid_date, bid_amount, buyed_now)
+        SELECT auction_id, user_id, bid_date, bid_amount, buyed_now FROM @table
 
     END
     ELSE IF (@type = 1) -- READ
@@ -313,18 +314,26 @@ BEGIN
     ELSE IF (@option = 1)
     BEGIN
 
-        SELECT TOP 50 * FROM auction WHERE end_date >= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT  TOP 50 a.*,
+                CAST((SELECT COUNT(*) FROM bid b WHERE a.auction_id = b.auction_id AND b.buyed_now = 1) AS BIT) AS [has_been_buyed]
+        FROM    auction a
+        WHERE   end_date >= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
     ELSE IF (@option = 2)
     BEGIN
 
-        SELECT TOP 100 * FROM auction WHERE end_date >= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT  TOP 100 a.*,
+                CAST((SELECT COUNT(*) FROM bid b WHERE a.auction_id = b.auction_id AND b.buyed_now = 1) AS BIT) AS [has_been_buyed]
+        FROM    auction a
+        WHERE   end_date >= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
 
     END
     ELSE IF (@option = 3)
     BEGIN
-        SELECT TOP 50 * FROM auction WHERE end_date <= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
+        SELECT  TOP 50 * 
+        FROM    auction 
+        WHERE   end_date <= CAST(GETDATE() AS DATE) ORDER BY [start_date] DESC
     END
 
 END
@@ -332,16 +341,26 @@ END
 GO
 CREATE PROCEDURE [dbo].[brb_auction_search]
 (
-    @search NVARCHAR(MAX)
+    @search NVARCHAR(MAX),
+    @condition NVARCHAR(MAX) = 'All',
+    @min_price FLOAT = 0,
+    @max_price FLOAT = 1000,
+    @status NVARCHAR(MAX) = 'all'
 )
 AS
 BEGIN
 
-    SELECT  * 
-    FROM    auction 
+    SELECT  a.*,
+            CAST((SELECT COUNT(*) FROM bid b WHERE a.auction_id = b.auction_id AND b.buyed_now = 1) AS BIT) AS [has_been_buyed]
+        INTO #pre_search
+    FROM    auction a
     WHERE   auction_name LIKE CONCAT('%', @search, '%') 
             AND end_date >= CAST(GETDATE() AS DATE)
+            AND condition = IIF(@condition = 'All', condition, @condition)
+            AND (buy_now_price BETWEEN @min_price AND @max_price)
     ORDER BY [start_price] 
+
+    SELECT * FROM #pre_search WHERE has_been_buyed = IIF(@status = 'all', has_been_buyed, @status)
 
 END
 
@@ -355,9 +374,14 @@ CREATE PROCEDURE [dbo].[brb_get_auction]
 AS
 BEGIN
 
-    SELECT auction_id, user_id, auction_name, start_price, buy_now_price, start_date, end_date, comission, tax, discount_percentage, condition, [description] FROM auction WHERE auction_id = @auction_id;
+    SELECT  auction_id, user_id, auction_name, start_price, buy_now_price, [start_date], 
+            end_date, comission, tax, discount_percentage, condition, [description]
+    FROM    auction a
+    WHERE   auction_id = @auction_id;
 
-    SELECT b.id, b.auction_id, b.user_id, u.username, b.bid_date, CAST(b.bid_amount AS FLOAT) AS bid_amount FROM bid b JOIN [user] u ON b.user_id = u.user_id WHERE auction_id = @auction_id;
+    SELECT  b.id, b.auction_id, b.user_id, u.username, b.bid_date, CAST(b.bid_amount AS FLOAT) AS bid_amount, b.buyed_now 
+    FROM    bid b JOIN [user] u ON b.user_id = u.user_id 
+    WHERE   auction_id = @auction_id;
 
 END
 

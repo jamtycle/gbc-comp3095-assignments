@@ -9,9 +9,10 @@ namespace assignment1.Models.Auction
         private int id;
         private int auction_id;
         private int user_id;
-        private string user_username;
+        private string username;
         private DateTime bid_date;
         private double bid_amount;
+        private bool buyed_now = false;
 
         public BidModel() : base()
         {
@@ -39,9 +40,27 @@ namespace assignment1.Models.Auction
         public int AuctionId { get => auction_id; set => auction_id = value; }
         [Required]
         public int UserId { get => user_id; set => user_id = value; }
-        public DateTime BidDate { get => bid_date.ToLocalTime(); set => bid_date = value; }
+        public DateTime BidDate { get => bid_date; set => bid_date = value; }
         [Required]
         public double BidAmount { get => bid_amount; set => bid_amount = value; }
-        public string UserUsername { get => user_username; set => user_username = value; }
+        public string Username { get => username; set => username = value; }
+        public bool BuyedNow { get => buyed_now; set => buyed_now = value; }
+        public string TimeMark
+        {
+            get
+            {
+                var tdiff = DateTime.Now - BidDate;
+                if (tdiff.TotalDays >= 365)
+                    return $"{tdiff.TotalDays / 365:###} years ago";
+                else if (tdiff.TotalDays >= 1)
+                    return $"{tdiff.TotalDays:###} days ago";
+                else if (tdiff.TotalHours >= 1)
+                    return $"{tdiff.TotalHours:##} hours ago";
+                else if (tdiff.TotalMinutes >= 1)
+                    return $"{tdiff.TotalMinutes:##} minutes ago";
+                else
+                    return $"{tdiff.TotalSeconds:##} seconds ago";
+            }
+        }
     }
 }

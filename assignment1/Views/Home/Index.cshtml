@@ -81,7 +81,6 @@
                 <a class="ripple" asp-controller="Auction" asp-action="AuctionPage" asp-route-aid="@auction.AuctionId">
                     <img src="/Images/AuctionImage?id=@auction.AuctionId" alt="@auction.AuctionName" class="card-img-top"
                         style="height:15vh;" />
-                    @* @auction.Base64Image *@
                 </a>
                 <div class="ms-3 card-body">
                     <a class="fw-bold mb-1 card-title" asp-controller="Auction" asp-action="AuctionPage"
@@ -90,7 +89,8 @@
                     <p class="text-muted mb-0 card-text">Buy Now: @auction.BuyNowPrice.ToString("C2")</p>
                     <p class="text-muted mb-0 card-text">End Date: @auction.EndDate.Date.ToString("dd/MM/yyyy")</p>
                     <p class="text-muted mb-0 card-text">End Time: @auction.EndDate.Date.ToString("HH:mm:ss")</p>
-                    <span class="badge rounded-pill badge-success card-footer">Active</span>
+                    <span class='badge rounded-pill @(auction.IsActive ? "badge-success" : "badge-danger") card-footer'>@(auction.IsActive ? "Active" : "Finished")</span>
+                    @* badge-success *@
                 </div>
             </div>
         }
