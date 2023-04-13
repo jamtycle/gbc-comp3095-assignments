@@ -57,12 +57,29 @@ namespace assignment1.Controllers
 
             UserBase other = new DBConnector().GetUser(_uid.Value);
 
-            return View("SellersPage", new LayoutModel<UserBase>()
+            if (user == null) // Not logged in
+                if (other == null) return RedirectToAction("Index", "Home");
+                else return View("SellersPage", new LayoutModel<UserBase>()
+                {
+                    User = user,
+                    Menus = this.GetMenus(user),
+                    Data = other
+                });
+
+            if (user.Id.Equals(other.Id)) return View("SellersPage", new LayoutModel<UserBase>()
             {
                 User = user,
                 Menus = this.GetMenus(user),
                 Data = user
             });
+
+            return View("SellersPage", new LayoutModel<UserBase>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = other
+            });
+            
         }
 
         [HttpPost("MakeUserSeller")]
