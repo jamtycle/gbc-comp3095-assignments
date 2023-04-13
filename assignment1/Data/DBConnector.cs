@@ -151,6 +151,13 @@ namespace assignment1.Data
             return (int)info.Rows[0]["id"];
         }
 
+        public bool UpdateAuction(AuctionModel _auction, bool _deep_copy = false)
+        {
+            var model = this.GetDataModel("AuctionType");
+            model.Rows.Add(_auction.ToDataRow(model, _deep_copy));
+            return this.NonQueryExecuteSQL("[brb_CRUD_auction]", new Hashtable() { { "@table", model }, { "@type", CRUD.Update } }) == 1;
+        }
+
         public bool UserValidationKey(string _key)
         {
             return this.NonQueryExecuteSQL("[brb_user_validation_key]", new Hashtable() { { "@key", _key } }) > 0;

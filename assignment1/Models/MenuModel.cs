@@ -13,7 +13,7 @@ namespace assignment1.Models
         private string action;
         private string controller;
         private string area;
-        private readonly string classes;
+        private readonly string classes = "";
 
         public MenuModel(DataRow _row) : base(_row) { }
 
