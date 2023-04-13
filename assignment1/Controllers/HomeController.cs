@@ -34,8 +34,14 @@ namespace assignment1.Controllers
         }
 
         [HttpGet("Search")]
-        public IActionResult Search([FromQuery(Name = "search")] string _search)
+        public IActionResult Search([FromQuery(Name = "search")] string _search,
+                                    [FromQuery(Name = "condition")] string _condition,
+                                    [FromQuery(Name = "min_price")] double? _min_price,
+                                    [FromQuery(Name = "max_price")] double? _max_price,
+                                    [FromQuery(Name = "status")] string _status)
         {
+            
+
             UserBase user = this.RecoverUserSession();
             LayoutModel<SearchModel> model = new()
             {
@@ -44,9 +50,13 @@ namespace assignment1.Controllers
                 Data = new SearchModel()
                 {
                     SearchText = _search ?? string.Empty,
-                    Search = new DBConnector().SearchAuctions(_search)
+                    ConditionText = _condition ?? "All",
+                    MinPrice = _min_price ?? 0,
+                    MaxPrice = _max_price ?? 1000,
+                    Status = _status ?? "all"
                 }
             };
+            model.Data.Search = new DBConnector().SearchAuctions(model.Data);
 
             return View(model);
         }

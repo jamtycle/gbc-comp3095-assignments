@@ -35,7 +35,8 @@ namespace assignment1.Controllers
         [HttpGet("AuctionPage")]
         public IActionResult Auction([FromQuery(Name = "aid")] int? _aid)
         {
-            if (!_aid.HasValue) return View();
+            if (!_aid.HasValue) return RedirectToAction("Index", "Home");
+            if (TempData.ContainsKey("Error")) ViewBag.Error = TempData["Error"];
 
             AuctionModel auct = new DBConnector().GetAuction(_aid.Value);
             UserBase user = this.RecoverUserSession();
@@ -54,31 +55,39 @@ namespace assignment1.Controllers
         public IActionResult PlaceBid(int auction_id, float bid_amt)
         {
             UserBase user = this.RecoverUserSession();
-            if (user == null) return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id }); // Auction(auction_id);
+            if (user == null) return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id }); // Auction(auction_id);
 
-            BidModel bid = new ()
+            BidModel bid = new()
             {
                 AuctionId = auction_id,
                 BidAmount = bid_amt,
-                BidDate = DateTime.UtcNow,
+                BidDate = DateTime.Now,
                 UserId = user.Id
             };
 
             AuctionModel auction = new DBConnector().GetAuction(auction_id);
-            if (auction.LastBid?.BidAmount >= bid_amt) {
-                ViewBag.Error = "The bid entered is less or equals than the actual bid.";
-                return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id });
+            if (!auction.IsActive)
+            {
+                TempData["Error"] = "The Auction is no longer active.";
+                return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
             }
 
-            if (auction.StartPrice > bid_amt) {
-                ViewBag.Error = "The bid entered is less than the start price.";
-                return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id });
+            if (auction.LastBid?.BidAmount >= bid_amt)
+            {
+                TempData["Error"] = "The bid entered is less or equals than the actual bid.";
+                return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
+            }
+
+            if (auction.StartPrice > bid_amt)
+            {
+                TempData["Error"] = "The bid entered is less than the start price.";
+                return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
             }
 
             if (!new DBConnector().AddBid(bid))
-                ViewBag.Error = "Something went wrong 🥲";
+                TempData["Error"] = "Something went wrong 🥲";
 
-            return RedirectToAction("Auction", "AuctionPage", new { _aid = auction_id });
+            return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
         }
 
         [HttpPost("BuyNowAuction")]
@@ -88,23 +97,31 @@ namespace assignment1.Controllers
             if (user == null) return Auction(auction_id);
 
             AuctionModel auction = new DBConnector().GetAuction(auction_id);
-            BidModel bid = new ()
+            if (!auction.IsActive)
+            {
+                TempData["Error"] = "The Auction is no longer active.";
+                return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
+            }
+
+            BidModel bid = new()
             {
                 AuctionId = auction_id,
                 BidAmount = auction.BuyNowPrice,
-                BidDate = DateTime.UtcNow,
-                UserId = user.Id
+                BidDate = DateTime.Now,
+                UserId = user.Id,
+                BuyedNow = true
             };
 
-            if (auction.LastBid.BidAmount >= auction.BuyNowPrice) {
-                ViewBag.Error = "You cannot buy now this product anymore";
-                return Auction(auction_id);
+            if (auction.LastBid.BidAmount >= auction.BuyNowPrice)
+            {
+                TempData["Error"] = "You cannot buy now this product anymore";
+                return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
             }
 
             if (!new DBConnector().AddBid(bid))
-                ViewBag.Error = "Something went wrong 🥲";
+                TempData["Error"] = "Something went wrong 🥲";
 
-            return Auction(bid.AuctionId);
+            return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });
         }
 
         [HttpPost("NewAuction")]
