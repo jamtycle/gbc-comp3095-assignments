@@ -1,0 +1,70 @@
+@model assignment1.Models.LayoutModel<assignment1.Models.Users.ProfileUser>
+
+@{
+    ViewData["Title"] = "Admin Edit Profile";
+}
+
+<br>
+<div class="d-flex align-items-center border-1 justify-content-center">
+    <div class="ms-3">
+        <div class="container">
+            @using (Html.BeginForm("AdminEditUser", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <input type="hidden" asp-for="@Model.Data.Id"/>
+
+                <div class="form-outline mb-4">
+                    <input type="text" asp-for="@Model.Data.Username" id="username" maxlength="25" class="form-control" />
+                    <label class="form-label" for="username">Username</label>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="form-outline">
+                            <input type="text" asp-for="@Model.Data.FirstName" id="fname" class="form-control" />
+                            <label class="form-label" for="fname">First Name</label>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-outline">
+                            <input type="text" asp-for="@Model.Data.LastName" id="lname" class="form-control" />
+                            <label class="form-label" for="lname">Last Name</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-8">
+                        <div class="form-outline">
+                            <input type="date" asp-for="@Model.Data.DateOfBirth" id="dob" class="form-control" />
+                            <label class="form-label" for="dob">DOB</label>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex justify-content-right align-items-center">
+                        <div class="form-check"> 
+                            <input type="checkbox" asp-for="@Model.Data.TwoFactorAuth" id="tfa" class="form-check-input" />
+                            <label class="form-check-label" for="tfa">2FA</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="prof_pic">Profile Pic</label>
+                    <input type="file" asp-for="@Model.Data.ProfilePic" id="prof_pic" class="form-control" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="user_type">User Type</label>
+                    <select asp-for="@Model.Data.UserType" id="user_type" class="form-select" placeholder="@Model.Data.UserType">
+                        <option selected="selected">Select an option below</option>
+                        <option value="2">Seller</option>
+                        <option value="1">Buyer</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block mb-4">Update Profile</button>
+            }
+        </div>
+    </div>
+</div>

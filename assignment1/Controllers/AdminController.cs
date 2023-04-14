@@ -41,13 +41,46 @@ namespace assignment1.Controllers
 
             else if (user.UserTypeId != Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Admin")).UserTypeId) return Forbid();
 
-            if (!_uid.HasValue) return RedirectToAction("AdminPage", "Admin");
+            // if (!_uid.HasValue) return RedirectToAction("AdminPage", "Admin");
 
             UserBase other = new DBConnector().GetUser(_uid.Value);
 
             if (other == null) return RedirectToAction("AdminPage", "Admin");
 
-            return RedirectToAction("EditProfile", "User", new { uid = _uid });
+            return View(new LayoutModel<ProfileUser>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = new ProfileUser(other)
+            });
         }
+
+        [HttpPost("AdminEditUser")]
+        public IActionResult AdminEditUser(ProfileUser _user)
+        {
+            if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
+
+            UserBase user = this.RecoverUserSession();
+
+            if (user == null) return Forbid();
+
+            else if (user.UserTypeId != Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Admin")).UserTypeId) return Forbid();
+
+            if (_user == null) return RedirectToAction("AdminPage", "Admin");
+
+            UserBase other = new DBConnector().GetUser(_user.Id);
+
+            if (other == null) return RedirectToAction("Index", "Home");
+
+            other.FirstName = _user.FirstName;
+            other.LastName = _user.LastName;
+            other.Email = _user.Email;
+            other.UserTypeId = _user.UserTypeId;
+
+            new DBConnector().UpdateUser(other);
+
+            return RedirectToAction("AdminPage", "Admin");
+        }
+
     }
 }
