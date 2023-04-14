@@ -27,7 +27,7 @@ namespace assignment1.Models.Auction
 
         private bool? has_been_buyed = null;
 
-        private string reviewers;
+        private string reviewers = string.Empty;
 
         public AuctionModel() : base() { }
 
