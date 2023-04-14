@@ -81,6 +81,9 @@ namespace assignment1.Models.Auction
         }
 
         public BidModel LastBid { get => bids.Max(); }
-        public IEnumerable<int> Reviewers { get => reviewers?.Split(',').Select(x => int.Parse(x)); }
+        public IEnumerable<int> Reviewers { get => reviewers?.Split(',').Select(x => {
+            if (int.TryParse(x, out int res)) return res;
+            else return -1;
+        }); }
     }
 }
