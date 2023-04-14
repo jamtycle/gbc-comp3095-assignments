@@ -8,26 +8,25 @@
 <div class="d-flex align-items-center border-1 justify-content-center">
     <div class="ms-3">
         <div class="container">
-            @using (Html.BeginForm("AdminEditUser", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                <input type="hidden" asp-for="@Model.Data.Id"/>
+            <form method="post" action='@Url.Action("AdminEditUser", "Admin")'  enctype="multipart/form-data">
+                <input type="hidden" asp-for="@Model.Data.Id" name="id"/>
 
                 <div class="form-outline mb-4">
-                    <input type="text" asp-for="@Model.Data.Username" id="username" maxlength="25" class="form-control" />
+                    <input type="text" asp-for="@Model.Data.Username" id="username" maxlength="25" class="form-control" name="Username"/>
                     <label class="form-label" for="username">Username</label>
                 </div>
 
                 <div class="row mb-4">
                     <div class="col">
                         <div class="form-outline">
-                            <input type="text" asp-for="@Model.Data.FirstName" id="fname" class="form-control" />
+                            <input type="text" asp-for="@Model.Data.FirstName" id="fname" class="form-control" name="FirstName"/>
                             <label class="form-label" for="fname">First Name</label>
                         </div>
                     </div>
 
                     <div class="col">
                         <div class="form-outline">
-                            <input type="text" asp-for="@Model.Data.LastName" id="lname" class="form-control" />
+                            <input type="text" asp-for="@Model.Data.LastName" id="lname" class="form-control" name="LastName"/>
                             <label class="form-label" for="lname">Last Name</label>
                         </div>
                     </div>
@@ -36,14 +35,14 @@
                 <div class="row mb-3">
                     <div class="col-8">
                         <div class="form-outline">
-                            <input type="date" asp-for="@Model.Data.DateOfBirth" id="dob" class="form-control" />
+                            <input type="date" asp-for="@Model.Data.DateOfBirth" id="dob" class="form-control" name="DateOfBirth"/>
                             <label class="form-label" for="dob">DOB</label>
                         </div>
                     </div>
 
                     <div class="col d-flex justify-content-right align-items-center">
                         <div class="form-check"> 
-                            <input type="checkbox" asp-for="@Model.Data.TwoFactorAuth" id="tfa" class="form-check-input" />
+                            <input type="checkbox" asp-for="@Model.Data.TwoFactorAuth" id="tfa" class="form-check-input" name="TwoFactorAuth"/>
                             <label class="form-check-label" for="tfa">2FA</label>
                         </div>
                     </div>
@@ -51,20 +50,28 @@
 
                 <div class="mb-4">
                     <label class="form-label" for="prof_pic">Profile Pic</label>
-                    <input type="file" asp-for="@Model.Data.ProfilePic" id="prof_pic" class="form-control" />
+                    <input type="file" asp-for="@Model.Data.ProfilePic" id="prof_pic" class="form-control" name="ProfilePic"/>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label" for="user_type">User Type</label>
-                    <select asp-for="@Model.Data.UserType" id="user_type" class="form-select" placeholder="@Model.Data.UserType">
+                    <select asp-for="@Model.Data.UserType" id="user_type" class="form-select" placeholder="@Model.Data.UserType" name="UserTypeId">
                         <option selected="selected">Select an option below</option>
                         <option value="2">Seller</option>
                         <option value="1">Buyer</option>
                     </select>
                 </div>
 
+                <div class="mb-4">
+                    <label class="form-label" for="disable_user">Would you like to disable this user</label>
+                    <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="Active" asp-for="@Model.Data.Active"/>
+                    <label class="form-check-label" for="flexCheckDefault">Default checkbox</label>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary btn-block mb-4">Update Profile</button>
-            }
+            </form>
         </div>
     </div>
 </div>
