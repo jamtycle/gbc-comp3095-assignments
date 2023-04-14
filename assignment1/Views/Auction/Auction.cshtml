@@ -16,7 +16,9 @@
                 <h2 class="card-title mb-1">@Model.Data.AuctionName</h2>
                 <p class="card-text mb-2">@Model.Data.Description</p>
             </div>
-
+            <div class="d-flex flex-column text-center mb-3">
+                <a asp-action="Seller" asp-controller="User" asp-route-uid="@Model.Data.UserId">Sellers Page</a>
+            </div>
             <div class="row justify-content-center">
                 @*TODO: add ends in timer*@
                 <h5 class="col-md-4 text-end">Ends at:</h5>
@@ -100,5 +102,22 @@
             </ul>
         </div>
     }
+
+    <form asp-action="Review" method="post">
+        <div class="form-control rounded p-3">
+            @*Review Range*@
+            <div class="form-control mb-4">
+                <label for="reviewScore" class="form-label">Rating from 1 to 10</label>
+                <br>
+                <input type="range" for="reviewScore" min="1" max="10">
+                <br>
+                <label for="reviewBox" class="form-label">Give us a review of the product</label>
+                <br>
+                <textarea for="reviewBox" rows="4" cols="50"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-4">Submit Review</button>
+            <br>
+        </div>
+    </form>
 
 </div>

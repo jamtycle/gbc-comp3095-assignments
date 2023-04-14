@@ -48,6 +48,41 @@ namespace assignment1.Controllers
                 Data = other
             });
         }
+        [HttpGet("Seller")]
+        public IActionResult SellersPage([FromQuery(Name = "uid")] int? _uid)
+        {
+            UserBase user = this.RecoverUserSession();
+
+            if (!_uid.HasValue)
+                if (user != null) _uid = user.Id;
+                else return RedirectToAction("Index", "Home");
+
+            UserBase other = new DBConnector().GetUser(_uid.Value);
+
+            if (user == null) // Not logged in
+                if (other == null) return RedirectToAction("Index", "Home");
+                else return View("SellersPage", new LayoutModel<UserBase>()
+                {
+                    User = user,
+                    Menus = this.GetMenus(user),
+                    Data = other
+                });
+
+            if (user.Id.Equals(other.Id)) return View("SellersPage", new LayoutModel<UserBase>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = user
+            });
+
+            return View("SellersPage", new LayoutModel<UserBase>()
+            {
+                User = user,
+                Menus = this.GetMenus(user),
+                Data = other
+            });
+            
+        }
 
         [HttpPost("MakeUserSeller")]
         public IActionResult MakeSellerUser(int? uid)

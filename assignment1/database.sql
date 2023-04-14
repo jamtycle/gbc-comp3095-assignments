@@ -213,6 +213,50 @@ You should not be able to modify a bid :s';
 END
 
 
+GO
+CREATE TYPE [ReviewType] AS TABLE (
+	[id] [int] NULL,
+	[auction_id] [int] NULL,
+	[user_id] [int] NULL,
+    [user_rating_id] [int] NOT NULL,
+	[rating] [int] NULL
+)
+
+GO
+CREATE PROCEDURE [brb_CRUD_review] 
+(
+    @type TINYINT,
+    @table ReviewType READONLY
+)
+AS
+BEGIN
+    
+    IF (@type = 0) -- CREATE
+    BEGIN
+
+        INSERT INTO [dbo].[review]([auction_id], [user_id], [user_rating_id], [rating])
+        SELECT auction_id, user_id, user_rating_id, rating FROM @table
+
+    END
+    ELSE IF (@type = 1) -- READ
+    BEGIN
+
+        SELECT  id, auction_id, user_id, user_rating_id, rating
+        FROM    [dbo].[review]
+
+    END
+    ELSE IF (@type = 2) -- UPDATE
+    BEGIN
+        PRINT 'No can do amigo :c';
+    END
+    ELSE IF (@type = 3) -- DELETE
+    BEGIN
+        PRINT 'No can do amigo :c';
+    END
+
+END
+
+
 -- ************************* PART 2 - Auth *************************
 GO
 CREATE PROCEDURE [dbo].[brb_login]
@@ -360,7 +404,9 @@ BEGIN
             AND (buy_now_price BETWEEN @min_price AND @max_price)
     ORDER BY [start_price] 
 
-    SELECT * FROM #pre_search WHERE has_been_buyed = IIF(@status = 'all', has_been_buyed, @status)
+    DECLARE @has_been_buyed BIT = IIF(@status = 'finished', 1, 0)
+
+    SELECT * FROM #pre_search WHERE has_been_buyed = IIF(@status = 'all', has_been_buyed, @has_been_buyed)
 
 END
 
@@ -398,6 +444,7 @@ BEGIN
 END
 
 -- ************************* PART 5 - Users *************************
+
 GO
 CREATE PROCEDURE [dbo].[brb_get_user]
 (
@@ -586,5 +633,23 @@ AS
 BEGIN
 
     SELECT user_id, username, date_of_birth, email, first_name, last_name, user_type_id FROM [user] WHERE user_type_id IN (1, 2)
+
+END
+
+
+-- ************************* PART 6 - Reviews *************************
+
+GO
+CREATE PROCEDURE [brb_get_reviews_by_user]
+(
+    @user_id INT
+)
+AS
+BEGIN
+
+    SELECT  r.auction_id, u.user_id, r.user_rating_id, ur.username, r.rating 
+    FROM    review r JOIN [user] u ON r.user_id = u.user_id
+                     JOIN [user] ur ON r.user_rating_id = ur.user_id
+    WHERE   r.user_id = @user_id
 
 END
