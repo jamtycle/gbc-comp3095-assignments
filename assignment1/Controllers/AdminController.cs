@@ -86,20 +86,15 @@ namespace assignment1.Controllers
         }
 
         [HttpGet("AdminAuction")]
-        public IActionResult AdminAuction([FromQuery(Name = "aid")] int? _aid)
+        public IActionResult AdminAuction()
         {
             if (!Request.Cookies.ContainsKey(Persistent.UserSession_Cookie)) return RedirectToAction("Index", "Home");
-
             UserBase user = this.RecoverUserSession();
 
             if (user == null) return Forbid();
-
             else if (user.UserTypeId != Persistent.user_type_table.FirstOrDefault(x => x.UserTypeName.Equals("Admin")).UserTypeId) return Forbid();
 
-            if (!_aid.HasValue) return RedirectToAction("AdminPage", "Admin");
-
             IEnumerable<AuctionModel> auction = new DBConnector().GetLastAuctions(DBConnector.LandingPageAuctionsOptions.Last50);
-
             if (auction == null) return RedirectToAction("AdminPage", "Admin");
 
             return View(new LayoutModel<IEnumerable<AuctionModel>>()
