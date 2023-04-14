@@ -52,6 +52,27 @@
                                 </div>
                             </li>
                         }
+
+                        @if (Model.User.UserType == "Admin")
+                        {
+                            <li class="mx-4">
+                                <div class="ms-3">
+                                    <a class="text-light" asp-controller="Admin" asp-action="AdminPage">Users</a>
+                                </div>
+                            </li>
+                            <li class="mx-4">
+                                <div class="ms-3">
+                                    <a class="text-light" asp-controller="Admin" asp-action="AdminPage">Auctions</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="ms-3">
+                                    <a class="text-light" asp-controller="User" asp-action="Profile" target="_self">
+                                        <p class="fw-bold mb-1">@Model.User.Username</p>
+                                    </a>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

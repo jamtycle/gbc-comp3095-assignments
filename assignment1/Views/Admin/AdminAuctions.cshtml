@@ -1,0 +1,32 @@
+@model assignment1.Models.LayoutModel<IEnumerable<assignment1.Models.Auction.AuctionModel>>
+
+@{
+    ViewData["Title"] = "Admin Page";
+}
+
+<div>
+    <p>This is the admin page</p>
+    <p>Here you can see all the Auctions</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Auction Name</th>
+                <th scope="col">Buy now price</th>
+                <th scope="col">Starting Price</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Auction Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var auction in Model.Data)
+            {
+                <tr>
+                    <td>@auction.AuctionName</td>
+                    <td>@auction.BuyNowPrice</td>
+                    <td>@auction.StartPrice</td>
+                    <td>@auction.EndDate</td>
+                    <td><a asp-controller="Admin" asp-action="AdminEditAuction" asp-route-uid="@auction.AuctionId">@auction.AuctionId</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>

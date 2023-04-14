@@ -1,0 +1,33 @@
+@model assignment1.Models.LayoutModel<IEnumerable<assignment1.Models.Generics.UserBase>>
+
+@{
+    ViewData["Title"] = "Admin Page";
+}
+
+<div>
+    <p>This is the admin page</p>
+    <p>Here you can see all the users</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">User Type</th>
+                <th scope="col">Edit User</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Data)
+            {
+                <tr>
+                    @* <td>@user.Username</td> *@
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@user.UserType</td>
+                    <td><a asp-controller="Admin" asp-action="AdminEditUser" asp-route-uid="@user.Id">@user.Id</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>

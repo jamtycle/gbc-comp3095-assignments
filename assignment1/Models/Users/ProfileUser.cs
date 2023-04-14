@@ -10,6 +10,8 @@ namespace assignment1.Models.Users
         public string username;
         public string password; 
 
+        private bool active;
+
         public ProfileUser() : base() { }
 
         public ProfileUser(DataRow _row) : base(_row) { }
@@ -23,6 +25,7 @@ namespace assignment1.Models.Users
             this.DateOfBirth = _base.DateOfBirth;
             this.TwoFactorAuth = _base.TwoFactorAuth;
             this.ProfilePic = _base.ProfilePic;
+            this.UserTypeId = _base.UserTypeId;
         }
 
         [Required]
@@ -40,5 +43,7 @@ namespace assignment1.Models.Users
         [Required]
         public override bool TwoFactorAuth { get => base.TwoFactorAuth; set => base.TwoFactorAuth = value; }
         public override byte[] ProfilePic { get => base.ProfilePic; set => base.ProfilePic = value; }
+        public override int UserTypeId { get => base.UserTypeId; set => base.UserTypeId = value; }
+        public bool Active { get => active; set => active = value; }
     }
 }
