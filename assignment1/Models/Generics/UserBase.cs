@@ -1,4 +1,5 @@
 using System.Data;
+using assignment1.Models.Reviews;
 using static assignment1.Libs.Persistent;
 
 namespace assignment1.Models.Generics
@@ -44,5 +45,7 @@ namespace assignment1.Models.Generics
         public virtual string TwoFactorCode { get => two_factor_code; set => two_factor_code = value; }
 
         public string UserType => user_type_table.FirstOrDefault(x => x.UserTypeId.Equals(this.user_type_id))?.UserTypeName ?? string.Empty;
+
+        public IEnumerable<ReviewModel> Reviews { get; set; }
     }
 }

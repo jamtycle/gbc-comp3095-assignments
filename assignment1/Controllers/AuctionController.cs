@@ -3,6 +3,7 @@ using assignment1.Libs;
 using assignment1.Models;
 using assignment1.Models.Auction;
 using assignment1.Models.Generics;
+using assignment1.Models.Reviews;
 using Microsoft.AspNetCore.Mvc;
 
 namespace assignment1.Controllers
@@ -37,6 +38,7 @@ namespace assignment1.Controllers
         {
             if (!_aid.HasValue) return RedirectToAction("Index", "Home");
             if (TempData.ContainsKey("Error")) ViewBag.Error = TempData["Error"];
+            if (TempData.ContainsKey("Rating")) ViewBag.Rating = TempData["Rating"];
 
             AuctionModel auct = new DBConnector().GetAuction(_aid.Value);
             UserBase user = this.RecoverUserSession();
@@ -111,8 +113,8 @@ namespace assignment1.Controllers
                 UserId = user.Id,
                 BuyedNow = true
             };
-
-            if (auction.LastBid.BidAmount >= auction.BuyNowPrice)
+        
+            if (auction.LastBid != null && auction.LastBid.BidAmount >= auction.BuyNowPrice)
             {
                 TempData["Error"] = "You cannot buy now this product anymore";
                 return RedirectToAction("AuctionPage", "Auction", new { aid = auction_id });

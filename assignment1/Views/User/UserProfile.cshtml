@@ -1,37 +1,56 @@
 ﻿@model assignment1.Models.LayoutModel<assignment1.Models.Generics.UserBase>
 
 @{
-    ViewData["Title"] = "UserPage";
+    ViewData["Title"] = $"{Model.Data.Username} Profile";
 }
 
 <br>
 <div>
-    <div class="d-flex align-items-center border-1">
-        <img src="/Images/UserImage?id=@Model.Data.Id" alt="@Model.Data.Username profile picture" style="width: 250px; height: 250px" class="rounded-circle" />
-        <div class="ms-3">
-            <div class="container">
-                <div class="row gx-5 align-items-center mb-3">
-                    <div class="col-md-6 m-auto">
-                        <h1 style="margin: auto;">@Model.Data.Username</h1>
-                    </div>
-                    <div class="col-md-6" style="padding-right: .2em;">
-                        <span
-                            class="badge rounded-pill badge-success">@Model.Data.UserType</span>
-                    </div>
+    <div class="d-flex align-items-center">
+        <img src="/Images/UserImage?id=@Model.Data.Id" alt="@Model.Data.Username profile picture" style="width: 250px; height: 250px" class="rounded-circle mx-3" />
+        <div class="d-flex flex-column w-100">
+            <div class="w-100 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-start mb-2">
+                    <h1 class="mx-3 my-auto" style="width: fit-content;">@Model.Data.Username</h1>
+                    <span class="my-auto badge rounded-pill badge-success">@Model.Data.UserType</span>
                 </div>
-                <div class="row gx-5">
-                    <p>@Model.Data.FirstName @Model.Data.LastName</p>
+                <div class="mt-2 mx-3">
+                    <p class="w-100 m-0 fs-4">@Model.Data.FirstName @Model.Data.LastName</p>
                 </div>
-                <div class="row gx-5">
-                    <p>@Model.Data.Email</p>
+                <div class="mb-2 mx-3">
+                    <p class="w-100 m-0 fs-4">@Model.Data.Email</p>
                 </div>
             </div>
+
+            <div class="d-flex flex-column w-100">
+            @if (Model.Data.Reviews != null && Model.Data.Reviews.Count() > 0)
+            {
+                @foreach(assignment1.Models.Reviews.ReviewModel review in Model.Data.Reviews)
+                {
+                    <div class="row mx-auto justify-content-center mb-2 mt-2">
+                        <div>
+                            <img src="/Images/UserImage?id=@review.UserRatingId" alt="@review.RatingUserUsername profile picture" style="width: 50px; height: 50px" class="rounded-circle mx-3" />
+                            @review.RatingUserUsername
+                        </div>
+                        <div>
+                            <p>Reviewed @review.AuctionName</p>
+                        </div>
+                        <div class="col-3 pe-none">
+                            @foreach(int number in Enumerable.Range(1, 5))
+                            {
+                                <p class="fs-3 m-0" style="color: #FFD600;">@(number <= review.Rating ? "★" : "☆")</p>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            </div>
+
         </div>
     </div>
     
 
-    @if (Model.User.UserTypeId == assignment1.Libs.Persistent.user_type_table.FirstOrDefault(x =>
-    x.UserTypeName.Equals("Buyer")).UserTypeId)
+    @if (Model.User.UserType.Equals("Buyer"))
     {
         <form asp-action="MakeUserSeller" asp-controller="User" method="post">
             <input type="hidden" value="@Model.Data.Id" name="uid" id="uid" />

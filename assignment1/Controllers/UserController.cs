@@ -22,6 +22,7 @@ namespace assignment1.Controllers
                 else return RedirectToAction("Index", "Home");
 
             UserBase other = new DBConnector().GetUser(_uid.Value);
+            other.Reviews = new DBConnector().GetReviewByUser(_uid.Value);
 
             if (user == null) // Not logged in
                 if (other == null) return RedirectToAction("Index", "Home");
@@ -48,6 +49,7 @@ namespace assignment1.Controllers
                 Data = other
             });
         }
+
         [HttpGet("Seller")]
         public IActionResult SellersPage([FromQuery(Name = "uid")] int? _uid)
         {
@@ -81,7 +83,7 @@ namespace assignment1.Controllers
                 Menus = this.GetMenus(user),
                 Data = other
             });
-            
+
         }
 
         [HttpPost("MakeUserSeller")]

@@ -27,6 +27,8 @@ namespace assignment1.Models.Auction
 
         private bool? has_been_buyed = null;
 
+        private string reviewers;
+
         public AuctionModel() : base() { }
 
         public AuctionModel(DataRow _auction) : base(_auction)
@@ -66,6 +68,7 @@ namespace assignment1.Models.Auction
         public string Description { get => description; set => description = value; }
 
         public bool HasBeenBuyedNow { get => has_been_buyed ?? Bids?.FirstOrDefault(x => x.BuyedNow) != null; }
+        public BidModel GetBuyedNow { get => Bids?.FirstOrDefault(x => x.BuyedNow); }
         public bool IsActive { get => !HasBeenBuyedNow && DateTime.UtcNow <= EndDate; }
 
         public double BidStart
@@ -78,5 +81,6 @@ namespace assignment1.Models.Auction
         }
 
         public BidModel LastBid { get => bids.Max(); }
+        public IEnumerable<int> Reviewers { get => reviewers?.Split(',').Select(x => int.Parse(x)); }
     }
 }

@@ -17,7 +17,8 @@ CREATE TYPE [dbo].[UserType] AS TABLE(
     [last_name] NVARCHAR(200) NULL,
     [validation_key] NVARCHAR(MAX) NULL, 
     [email] NVARCHAR(200) NULL, 
-    [profile_pic] IMAGE
+    [profile_pic] IMAGE,
+    [active] BIT
 )
 GO
 
@@ -53,15 +54,16 @@ BEGIN
     BEGIN
 
         UPDATE  base
-        SET     base.[user_type_id] = t.[user_type_id],
-                base.[password] = t.[password],
-                base.[session] = t.[session],
-                base.[date_of_birth] = t.[date_of_birth],
-                base.[first_name] = t.[first_name],
-                base.[last_name] = t.[last_name],
-                base.[validation_key] = t.[validation_key],
-                base.[email] = t.[email],
-                base.[profile_pic] = t.[profile_pic]
+        SET     base.[user_type_id] = IIF(t.[user_type_id] IS NULL, base.[user_type_id], t.[user_type_id]),
+                base.[password] = IIF(t.[password] IS NULL, base.[password], t.[password]),
+                base.[session] = IIF(t.[session] IS NULL, base.[session], t.[session]),
+                base.[date_of_birth] = IIF(t.[date_of_birth] IS NULL, base.[date_of_birth], t.[date_of_birth]),
+                base.[first_name] = IIF(t.[first_name] IS NULL, base.[first_name], t.[first_name]),
+                base.[last_name] = IIF(t.[last_name] IS NULL, base.[last_name], t.[last_name]),
+                base.[validation_key] = IIF(t.[validation_key] IS NULL, base.[validation_key], t.[validation_key]),
+                base.[email] = IIF(t.[email] IS NULL, base.[email], t.[email]),
+                base.[profile_pic] = IIF(t.[profile_pic] IS NULL, base.[profile_pic], t.[profile_pic]),
+                base.[active] = IIF(t.[active] IS NULL, base.[active], t.[active])
         FROM    [dbo].[user] base JOIN @table t ON base.user_id = t.user_id;
 
     END
@@ -98,7 +100,7 @@ CREATE TYPE [dbo].[AuctionType] AS TABLE(
 )
 GO
 
-CREATE PROCEDURE [dbo].[brb_CRUD_auction]
+ALTER PROCEDURE [dbo].[brb_CRUD_auction]
 (
     @type TINYINT,
     @table AuctionType READONLY 
@@ -132,17 +134,14 @@ BEGIN
     BEGIN
 
         UPDATE  base
-        SET     base.auction_name = t.auction_name,
-                base.start_price = t.start_price,
-                base.buy_now_price = t.buy_now_price,
-                base.[start_date] = t.[start_date],
-                base.end_date = t.end_date,
-                -- base.comission = t.comission,
-                -- base.tax = t.tax,
-                -- base.discount_percentage = t.discount_percentage,
-                base.condition = t.condition,
-                base.[description] = t.[description],
-                base.[image] = t.[image]
+        SET     base.[auction_name] = IIF(t.[auction_name] IS NULL, base.[auction_name], t.[auction_name]),
+                base.[start_price] = IIF(t.[start_price] IS NULL, base.[start_price], t.[start_price]),
+                base.[buy_now_price] = IIF(t.[buy_now_price] IS NULL, base.[buy_now_price], t.[buy_now_price]),
+                base.[start_date] = IIF(t.[start_date] IS NULL, base.[start_date], t.[start_date]),
+                base.[end_date] = IIF(t.[end_date] IS NULL, base.[end_date], t.[end_date]),
+                base.[condition] = IIF(t.[condition] IS NULL, base.[condition], t.[condition]),
+                base.[description] = IIF(t.[description] IS NULL, base.[description], t.[description]),
+                base.[image] = IIF(t.[image] IS NULL, base.[image], t.[image])
         FROM    auction base JOIN @table t ON base.auction_id = t.auction_id
 
     END
@@ -421,7 +420,8 @@ AS
 BEGIN
 
     SELECT  auction_id, user_id, auction_name, start_price, buy_now_price, [start_date], 
-            end_date, comission, tax, discount_percentage, condition, [description]
+            end_date, comission, tax, discount_percentage, condition, [description],
+            STUFF((SELECT ',' + CAST(r.user_rating_id AS NVARCHAR(MAX)) FROM review r WHERE r.auction_id = a.auction_id FOR XML PATH('')), 1, 1, '') AS reviewers
     FROM    auction a
     WHERE   auction_id = @auction_id;
 
@@ -647,9 +647,10 @@ CREATE PROCEDURE [brb_get_reviews_by_user]
 AS
 BEGIN
 
-    SELECT  r.auction_id, u.user_id, r.user_rating_id, ur.username, r.rating 
+    SELECT  r.auction_id, u.user_id, r.user_rating_id, ur.username, a.auction_name, r.rating 
     FROM    review r JOIN [user] u ON r.user_id = u.user_id
                      JOIN [user] ur ON r.user_rating_id = ur.user_id
+                     JOIN auction a ON r.auction_id = a.auction_id
     WHERE   r.user_id = @user_id
 
 END

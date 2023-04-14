@@ -1,14 +1,51 @@
 ﻿@model assignment1.Models.LayoutModel<assignment1.Models.Generics.UserBase>
 
 @{
-    ViewData["Title"] = "UserPage";
+    ViewData["Title"] = $"{Model.Data.Username} Profile";
 }
+
+<br>
 <div>
-    <p>this is the userView</p>
-    <h3>@Model.Data.Username</h3>
-    <p>@Model.Data.FirstName @Model.Data.LastName</p>
-    <p>@Model.Data.Email</p>
-</div>
-<div>
-    <img src="" />
+    <div class="d-flex align-items-center">
+        <img src="/Images/UserImage?id=@Model.Data.Id" alt="@Model.Data.Username profile picture" style="width: 250px; height: 250px" class="rounded-circle mx-3" />
+        <div class="d-flex flex-column w-100">
+            <div class="w-100 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-start mb-2">
+                    <h1 class="mx-3 my-auto" style="width: fit-content;">@Model.Data.Username</h1>
+                    <span class="my-auto badge rounded-pill badge-success">@Model.Data.UserType</span>
+                </div>
+                <div class="mt-2 mx-3">
+                    <p class="w-100 m-0 fs-4">@Model.Data.FirstName @Model.Data.LastName</p>
+                </div>
+                <div class="mb-2 mx-3">
+                    <p class="w-100 m-0 fs-4">@Model.Data.Email</p>
+                </div>
+            </div>
+
+            <div class="d-flex flex-row w-100">
+            @if (Model.Data.Reviews != null && Model.Data.Reviews.Count() > 0)
+            {
+                @foreach(assignment1.Models.Reviews.ReviewModel review in Model.Data.Reviews)
+                {
+                    <div class="row mx-auto justify-content-center mb-2 mt-2">
+                        <div class="col-4">
+                            <img src="/Images/UserImage?id=@review.UserRatingId" alt="@review.RatingUserUsername profile picture" style="width: 50px; height: 50px" class="rounded-circle mx-3" />
+                            <p>@review.RatingUserUsername</p>
+                        </div>
+                        <div class="col-8">
+                            <p>Reviewed @review.AuctionName</p>
+                            <div class="pe-none d-flex">
+                                @foreach(int number in Enumerable.Range(1, 5))
+                                {
+                                    <p class="fs-3 m-0" style="color: #FFD600;">@(number <= review.Rating ? "★" : "☆")</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            </div>
+
+        </div>
+    </div>
 </div>
